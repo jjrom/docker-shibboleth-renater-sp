@@ -1,9 +1,12 @@
 FROM debian:bullseye
 
-MAINTAINER BibCNRS <bibcnrs@inist.fr>
-
+# Fix the apache and mod_shib version to be sure 
+# nothing moves between two docker build.
+# To get the latest stable, this quick search can be done:
+# https://packages.debian.org/search?keywords=apache2&searchon=names&suite=stable&section=all
+# https://packages.debian.org/search?keywords=libapache2-mod-shib&searchon=names&suite=stable&section=all
 RUN apt-get update \
-  && apt-get -y install apache2 libapache2-mod-shib \
+  && apt-get -y install apache2=2.4.53-1~deb11u1 libapache2-mod-shib=3.2.2+dfsg1-1 \
   && apt-get clean
 
 RUN a2enmod ssl shib proxy_http
