@@ -3,7 +3,6 @@ FROM debian:bullseye
 MAINTAINER BibCNRS <bibcnrs@inist.fr>
 
 RUN apt-get update \
-  && apt-cache showpkg apache2 \
   && apt-get -y install apache2 libapache2-mod-shib \
   && apt-get clean
 
