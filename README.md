@@ -20,12 +20,12 @@ docker-compose build
 ## Configuration
 
 1) You have to generate a private/public key dedicated for the shibboleth SP daemon and put it into in ``ssl/server.key`` and ``ssl/server.crt`` files. Notice: the generated ``server.key`` is critical and should never be shared.  
-   [TODO TEST IT]Here is few command line example to generate a self-signed certificate with a long expiration delay ([following this doc](http://doc.ubuntu-fr.org/tutoriel/comment_creer_un_certificat_ssl)):  
-```
-openssl genrsa -out server.key 2048
-openssl req -new -key server.key -out server.csr
-openssl x509 -req -days 7300 -in server.csr -signkey server.key -out server.crt
-```
+  Here is few command line example to generate a self-signed certificate with a long expiration delay ([following this doc](http://doc.ubuntu-fr.org/tutoriel/comment_creer_un_certificat_ssl)): [TODO TEST IT]
+   ```
+   openssl genrsa -out server.key 2048
+   openssl req -new -key server.key -out server.csr
+   openssl x509 -req -days 7300 -in server.csr -signkey server.key -out server.crt
+   ```
    
 
 2) For french use case: you have to put the public key of your service provider in the [fédération d'identités Education-Recherche](https://federation.renater.fr/registry?action=get_all) 
