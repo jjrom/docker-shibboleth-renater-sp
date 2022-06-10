@@ -1,5 +1,5 @@
-<!-- This files comes from: https://git.renater.fr/anonscm/git/partage-fede/formation.git -->
 <Attributes xmlns="urn:mace:shibboleth:2.0:attribute-map" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <!-- This files comes from: https://git.renater.fr/anonscm/git/partage-fede/formation.git -->
 
     <!--
     The mappings are a mix of SAML 1.1 and SAML 2.0 attribute names agreed to within the Shibboleth

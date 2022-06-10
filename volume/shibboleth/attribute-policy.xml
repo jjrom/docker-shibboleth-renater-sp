@@ -15,7 +15,6 @@
      * Contrôle du scope des attributs scopés : un attribut mal scopé ne sera pas transmis à l'application
 
 -->
-
 <AttributeFilterPolicyGroup
     xmlns="urn:mace:shibboleth:2.0:afp"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
