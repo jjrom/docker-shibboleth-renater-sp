@@ -32,11 +32,11 @@ docker-compose build
 2) For french use case: you have to put the public key of your service provider in the [fédération d'identités Education-Recherche](https://federation.renater.fr/registry?action=get_all) 
 
 3) If necessary change the parameters in the ``docker-compose.yml`` or into a ``.env`` file, see example:
-```bash
-APPLI_APACHE_SERVERNAME="https://beta.theses.fr"
-APPLI_APACHE_SERVERADMIN="admin@example.fr"
-APPLI_APACHE_LOGLEVEL="info ssl:warn"
-```
+   ```bash
+   APPLI_APACHE_SERVERNAME="https://beta.theses.fr"
+   APPLI_APACHE_SERVERADMIN="admin@example.fr"
+   APPLI_APACHE_LOGLEVEL="info ssl:warn"
+   ```
 
 ### Demo
 
