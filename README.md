@@ -19,8 +19,9 @@ docker-compose build
 
 ## Configuration
 
-1) You have to generate a private/public key dedicated for the shibboleth SP daemon and put it into in ``ssl/server.key`` and ``ssl/server.crt`` files. Notice: the generated ``server.key`` is critical and should never be shared.  
-  As recommended by [RENATER, the french federated identity operator](https://services.renater.fr/federation/documentation/generale/certificats-saml#recommandations_techniques_pour_les_certificats), here is a command line example to generate a self-signed certificate with a long expiration delay ([following this doc](http://doc.ubuntu-fr.org/tutoriel/comment_creer_un_certificat_ssl)): [TODO TEST IT]
+
+1) You have to generate a private/public key dedicated for the shibboleth SP daemon and put it into in ``ssl/server.key`` and ``ssl/server.crt`` files. Notice: the generated ``server.key`` is critical and should never be shared. You can find a self-signed demo certificate into [``volume/shibboleth/ssl/server.crt``](https://github.com/abes-esr/docker-shibboleth-sp/tree/main/volume/shibboleth/ssl) it can be freely used for tests but **never use it in prod**.  
+  As recommended by [RENATER, the french federated identity operator](https://services.renater.fr/federation/documentation/generale/certificats-saml#recommandations_techniques_pour_les_certificats), here is few command line example to generate a self-signed certificate with a long expiration delay ([following this doc](http://doc.ubuntu-fr.org/tutoriel/comment_creer_un_certificat_ssl)):
    ```
    cd docker-shibboleth-sp/volume/shibboleth/ssl/
    openssl genrsa -out server.key 2048
