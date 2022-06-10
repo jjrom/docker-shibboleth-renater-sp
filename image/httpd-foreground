@@ -1,10 +1,14 @@
 #!/bin/bash
 
+# for easy debug: display the container parameters at startup
 env | grep APPLI_
 
+# shibd is a mandatory daemon, and it must run into the same container as apache
+# (bad practice for docker but it seams not possible to split it into 2 separated containers)
 /etc/init.d/shibd start
 
 # Apache gets grumpy about PID files pre-existing
 rm -f /usr/local/apache2/logs/httpd.pid
 
+# run apache2 as the main docker process
 exec apachectl -DFOREGROUND

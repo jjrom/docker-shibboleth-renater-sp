@@ -1,6 +1,9 @@
 FROM debian:bullseye
 
-# Fix the apache and mod_shib version to be sure 
+
+# apache2: to have the apache web server able to authenticate and to reverse proxy the real application
+# libapache2-mod-shib: to have mod_shib for apache and the shibd daemon
+# Apache and mod_shib versions are fixed to be sure 
 # nothing moves between two docker build.
 # To get the latest stable, this quick search can be done:
 # https://packages.debian.org/search?keywords=apache2&searchon=names&suite=stable&section=all
@@ -9,12 +12,15 @@ RUN apt-get update \
   && apt-get -y install apache2=2.4.53-1~deb11u1 libapache2-mod-shib=3.2.2+dfsg1-1 \
   && apt-get clean
 
+# ssh: for apache beeing able to listen with HTTPS (SGY 0/06/2022: WHY is it mandatory to have HTTPS ?)
+# shib: the famouse apache mod for beeing able to authenticate users thanks to shibboleth and SAML
+# proxy_http: for apache beeing able to proxy user's HTTP requests to the real application
 RUN a2enmod ssl shib proxy_http
 RUN a2dissite 000-default
 RUN a2ensite default-ssl
 
-# generate ssl keys to be able to start the shibd service
-# but these keys have to be replaced by officials ones at
+# generate fake ssl keys to be able to start the shibd service
+# but for production these keys have to be replaced by officials ones at
 # configuration step
 RUN cd /etc/shibboleth/ && shib-keygen
 
@@ -26,6 +32,7 @@ RUN ln -sf /proc/self/fd/1 /var/log/shibboleth/shibd_warn.log
 RUN ln -sf /proc/self/fd/1 /var/log/shibboleth/signature.log
 RUN ln -sf /proc/self/fd/1 /var/log/shibboleth/transaction.log
 
+# creates the entrypoint of this container
 COPY ./httpd-foreground /usr/local/bin/
 CMD [ "httpd-foreground" ]
 
