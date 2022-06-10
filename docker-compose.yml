@@ -1,0 +1,25 @@
+# docker-compose example to be able to
+# test easily this image or to give some
+# config to copy/paste for an easier 
+# integration in an application
+version: "3.5"
+
+services:
+  shibboleth-sp:
+    build: ./image/
+    image: abesesr/docker-shibboleth-sp:1.0.0
+    ports:
+        - 8443:443
+    environment:
+        - http_proxy
+        - https_proxy
+        - APPLI_APACHE_SERVERNAME=${APPLI_APACHE_SERVERNAME:-"https://beta.theses.fr"}
+        - APPLI_APACHE_SERVERADMIN=${APPLI_APACHE_SERVERADMIN:-"admin@example.fr"}
+        - APPLI_APACHE_LOGLEVEL=${APPLI_APACHE_LOGLEVEL:-"info ssl:warn"}
+    volumes:
+        - ./volume/shibboleth/:/etc/shibboleth/
+        - ./volume/shibboleth/log/:/var/log/shibboleth/
+        - ./volume/shibboleth/ssl/:/etc/shibboleth/ssl/
+        - ./volume/apache2/sites-available/:/etc/apache2/sites-available/
+    restart: unless-stopped
+
