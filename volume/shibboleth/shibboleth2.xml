@@ -1,0 +1,102 @@
+<!-- Fichier inspiré de cette doc: https://services.renater.fr/federation/documentation/guides-installation/sp3/chap04 -->
+<SPConfig xmlns="urn:mace:shibboleth:3.0:native:sp:config"
+    xmlns:conf="urn:mace:shibboleth:3.0:native:sp:config"
+    xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
+    xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+    xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+    clockSkew="180">
+
+
+    <!-- The ApplicationDefaults element is where most of Shibboleth's SAML bits are defined. -->
+    <ApplicationDefaults entityID="https://replaceme/sp"
+                         REMOTE_USER="eppn subject-id pairwise-id persistent-id"
+                         cipherSuites="DEFAULT:!EXP:!LOW:!aNULL:!eNULL:!DES:!IDEA:!SEED:!RC4:!3DES:!kRSA:!SSLv2:!SSLv3:!TLSv1:!TLSv1.1" >
+
+        <!--
+        Controls session lifetimes, address checks, cookie handling, and the protocol handlers.
+        You MUST supply an effectively unique handlerURL value for each of your applications.
+        The value defaults to /Shibboleth.sso, and should be a relative path, with the SP computing
+        a relative value based on the virtual host. Using handlerSSL="true", the default, will force
+        the protocol to be https. You should also set cookieProps to "https" for SSL-only sites.
+        Note that while we default checkAddress to "false", this has a negative impact on the
+        security of your site. Stealing sessions via cookie theft is much easier with this disabled.
+        -->
+        <Sessions lifetime="28800" timeout="3600" relayState="ss:mem"
+                  consistentAddress="true" handlerURL="/Shibboleth.sso"
+                  checkAddress="false" handlerSSL="true" cookieProps="https">
+
+            <!-- Nous mettons ici en place une relation de fédération :
+                 le SP ira demandé au DS a quel IdP faut il déléguer l'authentification -->
+            <SSO discoveryProtocol="SAMLDS" discoveryURL="https://discovery.renater.fr/test"> 
+              SAML2
+            </SSO>
+            <!-- Nous mettons ici en place une relation bilatérale :
+                 le SP ira toujours déléguer l'authentification à votre IDP -->
+<!-- 
+            <SSO entityID="https://monposte.fr/idp/shibboleth">
+              SAML2
+            </SSO>
+-->
+            <!-- Extension service that generates "approximate" metadata based on SP configuration. -->
+            <Handler type="MetadataGenerator" Location="/Metadata" signing="false"/>
+            
+            <!-- Route for debugging user attributs -->
+            <Handler type="Session" Location="/Session" showAttributeValues="true"/>
+
+            <!-- Status reporting service. -->
+            <Handler type="Status" Location="/Status" acl="127.0.0.1 ::1"/>
+        </Sessions>
+
+        <Errors supportContact="admin@example.fr"
+              metadata="metadataError_fr.html"
+              access="accessError_fr.html"
+              ssl="sslError_fr.html"
+              localLogout="localLogout_fr.html"
+              globalLogout="globalLogout_fr.html"
+              helpLocation="/about.html"
+              styleSheet="/shibboleth-sp/main.css"/>
+
+        <!--
+        Metadonnées des IdP la fédération RENATER ESR
+        ces fichiers seront téléchargés par le SP à interval réguliers (reloadInterval)
+        et permettent au SP de leur faire confiance
+        -->
+        <MetadataProvider type="Chaining">
+
+            <!-- Metadonnées de la fédération RENATER ciblé sur l'IdP du CNRS : Janus -->
+            <MetadataProvider type="XML" url="https://janus.cnrs.fr/metadata/cnrs-metadata.xml"
+                  backingFilePath="cnrs-metadata.xml" reloadInterval="3600" id="cnrs">
+                <MetadataFilter type="Whitelist"/>
+                <Include>https://janus.cnrs.fr/idp</Include>
+            </MetadataProvider>
+
+            <!-- Metadonnées de la fédération RENATER de test
+                 (ATTENTION: ne pas activer en prod) -->
+            <MetadataProvider type="XML" url="https://metadata.federation.renater.fr/test/preview/preview-idps-renater-test-metadata.xml"
+                  backingFilePath="renater-test-metadata.xml" reloadInterval="3600" id="renater-test">
+                <MetadataFilter type="RequireValidUntil" maxValidityInterval="2419200"/>
+                <MetadataFilter type="Signature" certificate="metadata-federation-renater.crt"/>
+            </MetadataProvider>
+
+            <!-- Meta-données de la fédération de Test RENATER
+                 (ATTENTION: ne pas activer en prod) -->
+            <MetadataProvider type="XML"
+              url="https://pub.federation.renater.fr/metadata/test/preview/preview-all-renater-test-metadata.xml"
+              backingFilePath="preview-all-renater-test-metadata.xml" reloadInterval="7200">
+              <MetadataFilter type="Signature" certificate="renater-metadata-signing-cert-2016.pem"/>
+            </MetadataProvider>
+
+            <!-- Metadonnées de TestShib https://www.testshib.org/configure.html
+                 (ATTENTION: ne pas activer en prod) -->
+            <!--
+            <MetadataProvider type="XML" url="http://www.testshib.org/metadata/testshib-providers.xml"
+                  backingFilePath="testshib-two-idp-metadata.xml" reloadInterval="180000" />
+            -->
+        </MetadataProvider>
+
+        <!-- Simple file-based resolver for using a single keypair. -->
+        <CredentialResolver type="File" key="ssl/server.key" certificate="ssl/server.crt" />
+
+    </ApplicationDefaults>
+
+</SPConfig>
