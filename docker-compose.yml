@@ -9,11 +9,11 @@ services:
     build: ./image/
     image: abesesr/docker-shibboleth-sp:1.0.0
     ports:
-        - 8443:443
+        - 443:443
     environment:
         - http_proxy
         - https_proxy
-        - APPLI_APACHE_SERVERNAME=${APPLI_APACHE_SERVERNAME:-https://beta.theses.fr}
+        - APPLI_APACHE_SERVERNAME=${APPLI_APACHE_SERVERNAME:-https://apollo-dev.theses.fr}
         - APPLI_APACHE_SERVERADMIN=${APPLI_APACHE_SERVERADMIN:-admin@example.fr}
         - APPLI_APACHE_LOGLEVEL=${APPLI_APACHE_LOGLEVEL:-info ssl:warn}
     volumes:
