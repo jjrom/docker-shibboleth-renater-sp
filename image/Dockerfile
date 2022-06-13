@@ -12,7 +12,7 @@ RUN apt-get update \
   && apt-get -y install apache2=2.4.53-1~deb11u1 libapache2-mod-shib=3.2.2+dfsg1-1 \
   && apt-get clean
 
-# ssh: for apache beeing able to listen with HTTPS (SGY 0/06/2022: WHY is it mandatory to have HTTPS ?)
+# ssl: for apache beeing able to listen with HTTPS (SGY 10/06/2022: WHY is it mandatory to have HTTPS ?)
 # shib: the famouse apache mod for beeing able to authenticate users thanks to shibboleth and SAML
 # proxy_http: for apache beeing able to proxy user's HTTP requests to the real application
 RUN a2enmod ssl shib proxy_http
