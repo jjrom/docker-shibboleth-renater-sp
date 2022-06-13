@@ -1,8 +1,11 @@
+<!-- Fichier inspiré de cette doc:
+     https://services.renater.fr/federation/documentation/guides-installation/sp3/chap04 -->
 <SPConfig xmlns="urn:mace:shibboleth:3.0:native:sp:config"
     xmlns:conf="urn:mace:shibboleth:3.0:native:sp:config"
+    xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
+    xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+    xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
     clockSkew="180">
-
-    <!-- Fichier inspiré de cette doc: https://services.renater.fr/federation/documentation/guides-installation/sp3/chap04 -->
 
     <!-- The ApplicationDefaults element is where most of Shibboleth's SAML bits are defined. -->
     <ApplicationDefaults entityID="https://replaceme/sp"
@@ -34,6 +37,7 @@
               SAML2
             </SSO>
 -->
+
             <!-- Extension service that generates "approximate" metadata based on SP configuration. -->
             <Handler type="MetadataGenerator" Location="/Metadata" signing="false"/>
             
@@ -42,6 +46,7 @@
 
             <!-- Status reporting service. -->
             <Handler type="Status" Location="/Status" acl="127.0.0.1 ::1"/>
+
         </Sessions>
 
         <Errors supportContact="admin@example.fr"
@@ -59,21 +64,6 @@
         et permettent au SP de leur faire confiance
         -->
         <MetadataProvider type="Chaining">
-
-            <!-- Metadonnées de la fédération RENATER ciblé sur l'IdP du CNRS : Janus -->
-            <MetadataProvider type="XML" url="https://janus.cnrs.fr/metadata/cnrs-metadata.xml"
-                  backingFilePath="cnrs-metadata.xml" reloadInterval="3600" id="cnrs">
-                <MetadataFilter type="Whitelist"/>
-                <Include>https://janus.cnrs.fr/idp</Include>
-            </MetadataProvider>
-
-            <!-- Metadonnées de la fédération RENATER de test
-                 (ATTENTION: ne pas activer en prod) -->
-            <MetadataProvider type="XML" url="https://metadata.federation.renater.fr/test/preview/preview-idps-renater-test-metadata.xml"
-                  backingFilePath="renater-test-metadata.xml" reloadInterval="3600" id="renater-test">
-                <MetadataFilter type="RequireValidUntil" maxValidityInterval="2419200"/>
-                <MetadataFilter type="Signature" certificate="metadata-federation-renater.crt"/>
-            </MetadataProvider>
 
             <!-- Meta-données de la fédération de Test RENATER
                  (ATTENTION: ne pas activer en prod) -->
@@ -95,5 +85,7 @@
         <CredentialResolver type="File" key="ssl/server.key" certificate="ssl/server.crt" />
 
     </ApplicationDefaults>
+
+    <SecurityPolicyProvider type="XML" validate="true" path="security-policy.xml" />
 
 </SPConfig>
