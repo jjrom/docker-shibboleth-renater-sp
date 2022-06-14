@@ -71,8 +71,8 @@
             <!-- Meta-données de la fédération de Test RENATER
                  (ATTENTION: ne pas activer en prod) -->
             <MetadataProvider type="XML"
-              url="https://pub.federation.renater.fr/metadata/test/preview/preview-all-renater-test-metadata.xml"
-              backingFilePath="preview-all-renater-test-metadata.xml" reloadInterval="7200">
+              url="https://pub.federation.renater.fr/metadata/test/preview/preview-idps-test-metadata.xml"
+              backingFilePath="preview-idps-test-metadata.xml" reloadInterval="7200">
               <MetadataFilter type="Signature" certificate="renater-metadata-signing-cert-2016.pem"/>
             </MetadataProvider>
 
