@@ -1,4 +1,3 @@
-#FROM debian:bullseye
 FROM httpd:2.4.54
 
 # apache2: to have the apache web server able to authenticate and to reverse proxy the real application
