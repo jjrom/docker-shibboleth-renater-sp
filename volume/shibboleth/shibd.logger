@@ -1,5 +1,10 @@
+########################################################################
+# A copy of the default /etc/shibboleth/shibd.logger but configured to
+# output messages to stdout.
+########################################################################
+
 # set overall behavior
-log4j.rootCategory=INFO, CONSOLE, shibd_log, warn_log
+log4j.rootCategory=INFO, shibd_log, warn_log
 
 # fairly verbose for DEBUG, so generally leave at INFO
 log4j.category.XMLTooling.XMLObject=INFO
@@ -44,12 +49,6 @@ log4j.ownAppenders.Shibboleth-TRANSACTION=true
 #log4j.category.Shibboleth-TRANSACTION.Logout=WARN
 
 # define the appenders
-
-# console output to docker
-log4j.appender.CONSOLE.Threshold=INFO
-log4j.appender.CONSOLE=org.apache.log4j.ConsoleAppender
-log4j.appender.CONSOLE.layout=org.apache.log4j.PatternLayout
-log4j.appender.CONSOLE.layout.ConversionPattern=%d [%p] %m%n
 
 log4j.appender.shibd_log=org.apache.log4j.RollingFileAppender
 log4j.appender.shibd_log.fileName=/var/log/shibboleth/shibd.log

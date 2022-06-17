@@ -26,26 +26,14 @@ RUN sed -i \
   -e '/httpd-vhosts.conf/s/^#//g' \
   /usr/local/apache2/conf/httpd.conf
 
-# # ssl: for apache beeing able to listen with HTTPS (SGY 10/06/2022: WHY is it mandatory to have HTTPS ?)
-# # shib: the famouse apache mod for beeing able to authenticate users thanks to shibboleth and SAML
-# # proxy_http: for apache beeing able to proxy user's HTTP requests to the real application
-# RUN a2enmod ssl shib proxy_http
-# RUN a2dissite 000-default
-# RUN a2ensite default-ssl
-
-# generate fake ssl keys to be able to start the shibd service
-# but for production these keys have to be replaced by officials ones at
-# configuration step
+# generate fake ssl keys to be able to start the shibd service even 
+# if nothing has been configured but for production these keys 
+# have to be replaced by officials ones at configuration step
 RUN cd /etc/shibboleth/ && shib-keygen
 
-# redirect logs to docker stdout/stderr
-RUN ln -sf /proc/self/fd/1 /var/log/apache2/access.log
-RUN ln -sf /proc/self/fd/1 /var/log/apache2/error.log
-# (not working yet for shib)
-RUN ln -sf /proc/self/fd/1 /var/log/shibboleth/shibd.log
-RUN ln -sf /proc/self/fd/1 /var/log/shibboleth/shibd_warn.log
-RUN ln -sf /proc/self/fd/1 /var/log/shibboleth/signature.log
-RUN ln -sf /proc/self/fd/1 /var/log/shibboleth/transaction.log
+# redirect apache logs to docker stdout/stderr
+RUN ln -sf /proc/1/fd/1 /var/log/apache2/access.log
+RUN ln -sf /proc/1/fd/2 /var/log/apache2/error.log
 
 # creates the entrypoint of this container
 COPY ./httpd-foreground /usr/local/bin/

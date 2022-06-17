@@ -6,8 +6,17 @@ env | grep APPLI_
 # shibd is a mandatory daemon, and it must run into the same container as apache
 # (bad practice for docker but it seams not possible to split it into 2 separated containers)
 /etc/init.d/shibd start
+# then we forward shibd logs to stdout and stderr to be able to see it in docker logs
+# 202206174:
+#   don't know why "RUN ln -sf /proc/1/fd/1 /var/log/shibboleth/shibd.log"
+#   from the Dockerfile is not working.
+{
+tail -f /var/log/shibboleth/shibd.log 		>> /proc/1/fd/1 ;
+tail -f /var/log/shibboleth/shibd_warn.log 	>> /proc/1/fd/2 ; 
+tail -f /var/log/shibboleth/transaction.log >> /proc/1/fd/1 ;
+tail -f /var/log/shibboleth/signature.log 	>> /proc/1/fd/1
+} &
 
-# Apache gets grumpy about PID files pre-existing
+# Run apache daemon foreground (monitored by docker)
 rm -f /usr/local/apache2/logs/httpd.pid
-
 exec httpd -DFOREGROUND "$@"
