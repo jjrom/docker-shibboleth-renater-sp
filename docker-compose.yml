@@ -11,10 +11,13 @@ services:
     ports:
         - 443:443
     environment:
-        - http_proxy
-        - https_proxy
-        - APPLI_APACHE_SERVERNAME=${APPLI_APACHE_SERVERNAME:-https://apollo-dev.theses.fr}
-        - APPLI_APACHE_SERVERADMIN=${APPLI_APACHE_SERVERADMIN:-admin@example.fr}
-        - APPLI_APACHE_LOGLEVEL=${APPLI_APACHE_LOGLEVEL:-info ssl:warn}
+        # container parameters, values comming from .env
+        # (see .env-dist example)
+        - RENATER_SP_ENTITY_ID
+        - RENATER_SP_ADMIN_MAIL
+        - RENATER_SP_HTTPD_SERVER_NAME
+        - RENATER_SP_HTTPD_LOG_LEVEL
+        - RENATER_SP_HTTPD_PROTECTED_PATH
+        - RENATER_SP_HTTPD_PUBLIC_PROXY_TO
+        - RENATER_SP_HTTPD_PROTECTED_PROXY_TO
     restart: unless-stopped
-
