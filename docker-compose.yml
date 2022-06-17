@@ -20,6 +20,6 @@ services:
         - ./volume/shibboleth/:/etc/shibboleth/
         - ./volume/shibboleth/log/:/var/log/shibboleth/
         - ./volume/shibboleth/ssl/:/etc/shibboleth/ssl/
-        - ./volume/apache2/sites-available/:/etc/apache2/sites-available/
+        - ./volume/apache2/sites-available/default-ssl.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
     restart: unless-stopped
 

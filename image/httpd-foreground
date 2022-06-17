@@ -10,5 +10,4 @@ env | grep APPLI_
 # Apache gets grumpy about PID files pre-existing
 rm -f /usr/local/apache2/logs/httpd.pid
 
-# run apache2 as the main docker process
-exec apachectl -DFOREGROUND
+exec httpd -DFOREGROUND "$@"
