@@ -25,13 +25,10 @@ RUN sed -i \
   -e '/httpd-vhosts.conf/s/^#//g' \
   /usr/local/apache2/conf/httpd.conf
 
-# apache conf including shib config
+# apache conf and shib config
+# (templates in order to be able to customize it fro external parameters)
 COPY ./httpd-vhosts.conf /usr/local/apache2/conf/extra/httpd-vhosts.conf
-
-# generate fake ssl keys to be able to start the shibd service even 
-# if nothing has been configured but for production these keys 
-# have to be replaced by officials ones at configuration step
-RUN cd /etc/shibboleth/ && shib-keygen
+COPY ./shibboleth/ /etc/shibboleth/
 
 # redirect apache logs to docker stdout/stderr
 RUN ln -sf /proc/1/fd/1 /var/log/apache2/access.log

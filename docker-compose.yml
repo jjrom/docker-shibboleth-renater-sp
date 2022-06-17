@@ -16,8 +16,5 @@ services:
         - APPLI_APACHE_SERVERNAME=${APPLI_APACHE_SERVERNAME:-https://apollo-dev.theses.fr}
         - APPLI_APACHE_SERVERADMIN=${APPLI_APACHE_SERVERADMIN:-admin@example.fr}
         - APPLI_APACHE_LOGLEVEL=${APPLI_APACHE_LOGLEVEL:-info ssl:warn}
-    volumes:
-        - ./volume/shibboleth/:/etc/shibboleth/
-        - ./volume/shibboleth/ssl/:/etc/shibboleth/ssl/
     restart: unless-stopped
 
