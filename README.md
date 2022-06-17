@@ -1,4 +1,4 @@
-# docker-shibboleth-sp
+# docker-shibboleth-renater-sp
 
 This is a docker image for a generic shibboleth service provider based on an apache web server. 
 This apache web server can be used as a reverse proxy in charge of authenticating users with SAML.
