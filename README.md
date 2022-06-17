@@ -47,4 +47,7 @@ docker-compose up
 
 ## See also
 
-To use the image see example at https://github.com/BibCnrs/BibRP/
+To use the image see example at https://github.com/BibCnrs/BibRP/  
+This image is inspired by : https://github.com/mconf/apache-shib-docker/ and https://gitlab.oit.duke.edu/devil-ops/duke-shibboleth-container
+
+
