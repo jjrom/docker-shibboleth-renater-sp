@@ -25,6 +25,9 @@ RUN sed -i \
   -e '/httpd-vhosts.conf/s/^#//g' \
   /usr/local/apache2/conf/httpd.conf
 
+# apache conf including shib config
+COPY ./httpd-vhosts.conf /usr/local/apache2/conf/extra/httpd-vhosts.conf
+
 # generate fake ssl keys to be able to start the shibd service even 
 # if nothing has been configured but for production these keys 
 # have to be replaced by officials ones at configuration step
