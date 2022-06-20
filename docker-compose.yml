@@ -13,6 +13,7 @@ services:
     environment:
         # container parameters, values comming from .env
         # (see .env-dist example)
+        - RENATER_SP_TEST_OR_PROD
         - RENATER_SP_ENTITY_ID
         - RENATER_SP_ADMIN_MAIL
         - RENATER_SP_HTTPD_SERVER_NAME

@@ -28,11 +28,21 @@
                   consistentAddress="true" handlerURL="/Shibboleth.sso"
                   checkAddress="false" handlerSSL="true" cookieProps="https">
 
-            <!-- Nous mettons ici en place une relation de fédération :
+            <!-- Nous mettons ici en place une relation de fédération 
+                 (cf https://services.renater.fr/federation/outils/service-de-decouverte/index)
                  le SP ira demandé au DS a quel IdP faut il déléguer l'authentification -->
+            <!-- RENATER_SP_TEST_OR_PROD=TEST BEGIN -->
             <SSO discoveryProtocol="SAMLDS" discoveryURL="https://discovery.renater.fr/test"> 
               SAML2
             </SSO>
+            <!-- RENATER_SP_TEST_OR_PROD=TEST END -->
+            <!-- RENATER_SP_TEST_OR_PROD=PROD BEGIN --><!--
+            <SSO discoveryProtocol="SAMLDS" discoveryURL="https://discovery.renater.fr/renater"> 
+              SAML2
+            </SSO>
+            --><!-- RENATER_SP_TEST_OR_PROD=PROD END -->
+
+
             <!-- Nous mettons ici en place une relation bilatérale :
                  le SP ira toujours déléguer l'authentification à votre IDP -->
 <!-- 
@@ -70,11 +80,25 @@
 
             <!-- Meta-données de la fédération de Test RENATER
                  (ATTENTION: ne pas activer en prod) -->
+            <!-- RENATER_SP_TEST_OR_PROD=TEST BEGIN -->
             <MetadataProvider type="XML"
               url="https://pub.federation.renater.fr/metadata/test/preview/preview-idps-test-metadata.xml"
-              backingFilePath="preview-idps-test-metadata.xml" reloadInterval="7200">
+              backingFilePath="preview-idps-test-metadata.xml" reloadInterval="3600">
               <MetadataFilter type="Signature" certificate="renater-metadata-signing-cert-2016.pem"/>
             </MetadataProvider>
+            <!-- RENATER_SP_TEST_OR_PROD=TEST END -->
+
+
+            <!-- Meta-données de la fédération de Prod de RENATER
+                 cf https://services.renater.fr/federation/documentation/fiches-techniques/passageprod
+            -->
+            <!-- RENATER_SP_TEST_OR_PROD=PROD BEGIN --><!--
+            <MetadataProvider type="XML"
+              url="https://pub.federation.renater.fr/metadata/renater/main/main-idps-renater-metadata.xml"
+              backingFilePath="main-idps-renater-metadata.xml" reloadInterval="3600">
+              <MetadataFilter type="Signature" certificate="renater-metadata-signing-cert-2016.pem"/>
+            </MetadataProvider>
+            --><!-- RENATER_SP_TEST_OR_PROD=PROD END -->
 
             <!-- Metadonnées de TestShib https://www.testshib.org/configure.html
                  (ATTENTION: ne pas activer en prod) -->

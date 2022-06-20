@@ -2,6 +2,7 @@
 
 # forward parameters to docker process (apache and shibd)
 export RENATER_SP_TEST_OR_PROD=${RENATER_SP_TEST_OR_PROD:='TEST'}
+export RENATER_SP_TEST_OR_PROD=${RENATER_SP_TEST_OR_PROD^^} # force upercase: TEST or PROD
 export RENATER_SP_ENTITY_ID=${RENATER_SP_ENTITY_ID}
 export RENATER_SP_ADMIN_MAIL=${RENATER_SP_ADMIN_MAIL:='admin@exemple.fr'}
 export RENATER_SP_HTTPD_SERVER_NAME=${RENATER_SP_HTTPD_SERVER_NAME}
@@ -19,15 +20,28 @@ if [ -z ${RENATER_SP_HTTPD_PROTECTED_PATH} ]; then echo "Error: RENATER_SP_HTTPD
 if [ -z ${RENATER_SP_HTTPD_PUBLIC_PROXY_TO} ]; then echo "Error: RENATER_SP_HTTPD_PUBLIC_PROXY_TO is a mandatory parameter. ${SEE_ALSO_LINK}" && exit 1 ; fi
 if [ -z ${RENATER_SP_HTTPD_PROTECTED_PROXY_TO} ]; then echo "Error: RENATER_SP_HTTPD_PROTECTED_PROXY_TO is a mandatory parameter. ${SEE_ALSO_LINK}" && exit 1 ; fi
 
-
 # instanciates shibboleth2.xml from it's template
 cp -f /etc/shibboleth/shibboleth2.orig.xml /etc/shibboleth/shibboleth2.xml
 sed -i "s#https://replaceme/sp#${RENATER_SP_ENTITY_ID}#" /etc/shibboleth/shibboleth2.xml
 sed -i "s#admin@replace.me#${RENATER_SP_ADMIN_MAIL}#" /etc/shibboleth/shibboleth2.xml
+if [ "$RENATER_SP_TEST_OR_PROD" = "PROD" ]; then
+	# comment the TEST blocs
+	sed -i 's#<!-- RENATER_SP_TEST_OR_PROD=TEST BEGIN -->#<!-- RENATER_SP_TEST_OR_PROD=TEST BEGIN --><!--#g' /etc/shibboleth/shibboleth2.xml
+	sed -i 's#<!-- RENATER_SP_TEST_OR_PROD=TEST END -->#--><!-- RENATER_SP_TEST_OR_PROD=TEST END -->#g' /etc/shibboleth/shibboleth2.xml
+	# uncomment the PROD blocs
+	sed -i 's#<!-- RENATER_SP_TEST_OR_PROD=PROD BEGIN --><!--#<!-- RENATER_SP_TEST_OR_PROD=PROD BEGIN -->#g' /etc/shibboleth/shibboleth2.xml
+	sed -i 's#--><!-- RENATER_SP_TEST_OR_PROD=PROD END -->#<!-- RENATER_SP_TEST_OR_PROD=PROD END -->#g' /etc/shibboleth/shibboleth2.xml
+else
+	if [ "$RENATER_SP_TEST_OR_PROD" != "TEST" ]; then
+		echo "Error: RENATER_SP_TEST_OR_PROD value must be set to TEST ou PROD (your current value is '$RENATER_SP_TEST_OR_PROD')"
+		exit 1
+	fi
+fi
 
 
 # shibd is a mandatory daemon, and it must run into the same container as apache
 # (bad practice for docker but it seams not possible to split it into 2 separated containers)
+echo "Starting shibd daemon... (could be long because of metadata download stuff)"
 /etc/init.d/shibd start
 # then we forward shibd logs to stdout and stderr to be able to see it in docker logs
 # 202206174:
