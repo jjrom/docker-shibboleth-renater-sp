@@ -20,7 +20,32 @@ docker-compose build
 
 ## Configuration
 
-1) Vous avez besoin de générer un couple de clé SSH privée/publique dédié pour le démon shibboleth qui tournera dans le conteneur. Ces clés sont ici dans l'image : ``/etc/shibboleth/ssl/server.key`` et ``/etc/shibboleth/ssl/server.crt``. Remarque : la clé ``server.key`` (privée) is critique et ne doit jamais être partagée mais pour des raison de démonstration, un couple de clé ``server.key`` et ``server.crt`` est inclu dans cette image ce qui permet de tester facilement cette image sans avoir à en générer une soit même. En revanche, cette clé ne doit **jamais être utilisée en production** car elle est [accessible publiquement dans le code source ici](https://github.com/abes-esr/docker-shibboleth-renater-sp/blob/main/image/shibboleth/ssl/server.key). Pour votre passage en production, nous aurez besoin de générer un couple de clé vous même. Voici les lignes de commandes permettant de générer un couple de clé auto-signées avec un long délai d'expiration (7300 jours = 20 ans!) comme recommandé par [RENATER](https://services.renater.fr/federation/documentation/generale/certificats-saml#recommandations_techniques_pour_les_certificats) :
+Les variables suivantes sont utilisées pour personnaliser votre conteneur :
+- ``RENATER_SP_TEST_OR_PROD`` : pour basculer facilement le fournisseur de service sur la fédération RENATER de TEST ou de PROD (valeur par défaut: ``TEST``)
+- ``RENATER_SP_ENTITY_ID`` : l'identifiant technique de votre fournisseur de service (valeur par défaut: non-renseigné ; exemple de valeur : ``https://apollo-dev.theses.fr/sp``)
+- ``RENATER_SP_ADMIN_MAIL`` : l'adresse mail de contact qui sera utilisé dans les page d'erreur d'Apache et de Shibboleth (valeur par défaut : non-renseigné ; exemple de valeur: ``admin@theses.fr``)
+- ``RENATER_SP_HTTPD_SERVER_NAME`` : le nom public du serveur web de votre fournisseur de service (valeur par défaut : non-renseigné ; exemple de valeur : ``https://apollo-dev.theses.fr``)
+- ``RENATER_SP_HTTPD_LOG_LEVEL`` : le niveau de log du serveur apache (valeur par défaut ``info ssl:warn``)
+- ``RENATER_SP_HTTPD_PROTECTED_PATH`` : le chemin à protéger par une authentification dans la fédération d'identités (valeur par défaut: ``/my-protected-url/``)
+- ``RENATER_SP_HTTPD_PUBLIC_PROXY_TO`` : l'adresse du serveur (interne) de votre application qui sera "reverse proxifiée" en mode non authentifié, elle correspond au chemin ``/`` de l'URL publique
+- ``RENATER_SP_HTTPD_PROTECTED_PROXY_TO`` : : l'adresse du serveur (interne) de votre application qui sera "reverse proxifiée" en mode authentifié, elle correspond au chemin ``/my-protected-url/`` de l'URL publique (à adapter avec la valeur passée dans ``RENATER_SP_HTTPD_PROTECTED_PATH``). Dans la pluspart des cas, la valeur de ``RENATER_SP_HTTPD_PROTECTED_PROXY_TO`` vaut la même chose que ``RENATER_SP_HTTPD_PUBLIC_PROXY_TO`` car l'application à authentifier est la même que celle qui possède des pages publique.
+
+Pour les passer en argument à votre conteneur docker, vous pouvez les positionner dans un fichier ``.env`` à coté de votre ``docker-compose.yml`` en prenant exemple sur [``.env-dist``](https://github.com/abes-esr/docker-shibboleth-renater-sp/blob/main/.env-dist) qui propose des exemples de valeurs. Votre ``docker-compose.yml`` doit alors transmettre ces variables au conteneur en les précisant dans la section [environment comme dans cet exemple](https://github.com/abes-esr/docker-shibboleth-renater-sp/blob/0fdb9619c4e4b8bb2f50dfda1f93c4a1d65df4bb/docker-compose.yml#L13-L23).
+
+
+## Configuration en TEST
+
+1) Vous avez uniquement besoin de personnaliser les valeurs du ``.env`` (cf section ci-dessus) en précisant ``RENATER_SP_TEST_OR_PROD="TEST"``, puis vous pouvez lancer votre conteneur puis consulter l'URL https://votre-ip/Shibboleth.sso/Metadata pour récupérer les métadonnées attendue dans l'étape 2 par le guichet RENATER.
+
+2) Vous devez ensuite enregistrer votre fournisseur de service dans la [fédération d'identités Education-Recherche de test](https://federation.renater.fr/registry?action=get_all). Remarque : pour le certificat (couple clé privé/publique), vous pouvez utiliser [celui qui est embarqué dans l'image docker](https://github.com/abes-esr/docker-shibboleth-renater-sp/tree/main/image/shibboleth/ssl).
+
+3) Vous pouvez alors tester votre fournisseur de service en naviguant sur l'URL suivante : https://votre-ip/my-protected-url/ (adapter en fonction de la valeur de ``RENATER_SP_HTTPD_PROTECTED_PATH``)
+
+## Configuration en PROD
+
+1) Vous avez besoin de personnaliser les valeurs du ``.env`` (cf section ci-dessus) en précisant ``RENATER_SP_TEST_OR_PROD="PROD"``
+
+2) Vous avez besoin de générer un couple de clé SSH privée/publique dédié pour le démon shibboleth qui tournera dans le conteneur. Ces clés sont ici dans l'image : ``/etc/shibboleth/ssl/server.key`` et ``/etc/shibboleth/ssl/server.crt``. Remarque : la clé ``server.key`` (privée) is critique et ne doit jamais être partagée mais pour des raison de démonstration, un couple de clé ``server.key`` et ``server.crt`` est inclu dans cette image ce qui permet de tester facilement cette image sans avoir à en générer une soit même. En revanche, cette clé ne doit **jamais être utilisée en production** car elle est [accessible publiquement dans le code source ici](https://github.com/abes-esr/docker-shibboleth-renater-sp/blob/main/image/shibboleth/ssl/server.key). Pour votre passage en production, nous aurez besoin de générer un couple de clé vous même. Voici les lignes de commandes permettant de générer un couple de clé auto-signées avec un long délai d'expiration (7300 jours = 20 ans!) comme recommandé par [RENATER](https://services.renater.fr/federation/documentation/generale/certificats-saml#recommandations_techniques_pour_les_certificats) :
    ```
    cd docker-shibboleth-sp/volume/shibboleth/ssl/
    openssl genrsa -out server.key 2048
@@ -28,20 +53,16 @@ docker-compose build
    openssl x509 -req -days 7300 -in server.csr -signkey server.key -out server.crt
    ```
 
-3) Vous devez ensuite personnaliser les variables de votre fournisseur de service en copiant ``.env-dist`` dans ``.env`` et en personnalisant les valeurs:
-   ```bash
-   APPLI_APACHE_SERVERNAME="https://appolo-dev.theses.fr"
-   APPLI_APACHE_SERVERADMIN="admin@example.fr"
-   APPLI_APACHE_LOGLEVEL="info ssl:warn"
-   ```
-2) Vous devez ensuite enregistrer votre fournisseur de service dans la [fédération d'identités Education-Recherche](https://federation.renater.fr/registry?action=get_all)
+3) Vous devez ensuite lancer votre conteneur puis consulter l'URL https://votre-ip/Shibboleth.sso/Metadata pour récupérer les métadonnées attendue dans l'étape suivante par le guichet RENATER.
 
-3) Vous pouvez tester votre fournisseur de service en naviguant sur l'URL suivante : https://votre-ip/my-protected-url/
+4) Vous devez ensuite enregistrer votre fournisseur de service dans la [fédération d'identités Education-Recherche de production](https://federation.renater.fr/registry?action=get_all)
+
+5) Vous pouvez tester votre fournisseur de service en naviguant sur l'URL suivante : https://votre-ip/my-protected-url/
 
 
 ### Demo
 
-Pour lancer l'image docker depuis le docker-compose exemple:
+Pour lancer l'image docker depuis le docker-compose exemple en test ou en prod (cf section configuration) :
 ```bash
 docker-compose up
 ```
