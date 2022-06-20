@@ -1,6 +1,6 @@
 # docker-shibboleth-renater-sp
 
-Ce dépôt propose une image docker générique permettant de mettre en place un fournisseur de service connecté sur la [Fédération d'identités Education-Recherche (FER)](https://services.renater.fr/federation/index).
+Ce dépôt propose une image docker générique permettant de mettre en place un fournisseur de service pré-connecté sur la [Fédération d'identités Education-Recherche (FER)](https://services.renater.fr/federation/index).
 
 Fonctionnement : ce fournisseur de service s'intégre sur une application tiers en se positionnant en amon des flux HTTP et en jouant le rôle de reverse proxy authentifiant. C'est à dire qu'une requête HTTP permettant d'accéder à l'application va tout d'abord transiter par cette brique pour ensuite être transmise à l'application cible. L'avantage de cette approche c'est de pouvoir intégrer une authentification SAML sur une application sans avoir à la modifier en profondeur, c'est ce reverse proxy qui se charge de transmettre une preuve de l'authentification à l'application. Cette preuve contient l'identifiant de l'utilisateur ainsi que les attributs fournits par le fournisseur d'identités (ex: mail, nom, prénom, supannEtablissement, etc ...).
 
