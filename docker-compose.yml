@@ -9,16 +9,26 @@ services:
     build: ./image/
     image: abesesr/docker-shibboleth-sp:1.0.0
     ports:
-        - 443:443
+      - 443:443
     environment:
-        # container parameters, values comming from .env
-        # (see .env-dist example)
-        - RENATER_SP_TEST_OR_PROD
-        - RENATER_SP_ENTITY_ID
-        - RENATER_SP_ADMIN_MAIL
-        - RENATER_SP_HTTPD_SERVER_NAME
-        - RENATER_SP_HTTPD_LOG_LEVEL
-        - RENATER_SP_HTTPD_PROTECTED_PATH
-        - RENATER_SP_HTTPD_PUBLIC_PROXY_TO
-        - RENATER_SP_HTTPD_PROTECTED_PROXY_TO
+      # container parameters, values comming from .env
+      # (see .env-dist example)
+      - RENATER_SP_TEST_OR_PROD
+      - RENATER_SP_ENTITY_ID
+      - RENATER_SP_ADMIN_MAIL
+      - RENATER_SP_HTTPD_SERVER_NAME
+      - RENATER_SP_HTTPD_LOG_LEVEL
+      - RENATER_SP_HTTPD_PROTECTED_PATH
+      - RENATER_SP_HTTPD_PUBLIC_PROXY_TO
+      - RENATER_SP_HTTPD_PROTECTED_PROXY_TO
+    restart: unless-stopped
+    depends_on:
+      - backend-example
+
+  # container just echoing all the HTTP headers as a JSON object
+  # perfect for our shibboleth test because we need to show all the
+  # attributes populated by the reverse proxy (shibboleth-sp container)
+  # https://hub.docker.com/r/mendhak/http-https-echo
+  backend-example:
+    image: mendhak/http-https-echo:23
     restart: unless-stopped
