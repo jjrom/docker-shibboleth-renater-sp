@@ -52,7 +52,7 @@
 
         </Sessions>
 
-        <Errors supportContact="admin@example.fr"
+        <Errors supportContact="admin@replace.me"
               metadata="metadataError_fr.html"
               access="accessError_fr.html"
               ssl="sslError_fr.html"

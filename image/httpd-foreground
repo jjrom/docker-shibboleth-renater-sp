@@ -23,6 +23,7 @@ if [ -z ${RENATER_SP_HTTPD_PROTECTED_PROXY_TO} ]; then echo "Error: RENATER_SP_H
 # instanciates shibboleth2.xml from it's template
 cp -f /etc/shibboleth/shibboleth2.orig.xml /etc/shibboleth/shibboleth2.xml
 sed -i "s#https://replaceme/sp#${RENATER_SP_ENTITY_ID}#" /etc/shibboleth/shibboleth2.xml
+sed -i "s#admin@replace.me#${RENATER_SP_ADMIN_MAIL}#" /etc/shibboleth/shibboleth2.xml
 
 
 # shibd is a mandatory daemon, and it must run into the same container as apache
