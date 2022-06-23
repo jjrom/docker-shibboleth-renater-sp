@@ -16,6 +16,11 @@ cd docker-shibboleth-sp/
 docker-compose build
 ```
 
+A noter que la dernière version disponible de l'image est la suivante:
+```bash
+docker pull abesesr/docker-shibboleth-renater-sp:1.0.0
+```
+
 ## Comment utiliser cette image ?
 
 ## Configuration

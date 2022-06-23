@@ -49,8 +49,11 @@ jobs:
           git config --global user.email "github-action@noreply"
           git config --global user.name "Github Action"
             
-          # add TAG $NEW_TAG
-          #git commit --amend -m "Version $NEW_TAG"
+          # patch version number and add the tag $NEW_TAG
+          sed -i \
+            "s#abesesr/docker-shibboleth-renater-sp:[0-9]+\.[0-9]+\.[0-9]+#abesesr/docker-shibboleth-renater-sp:$NEW_TAG#g" \
+            README.md docker-compose.yml
+          git commit -m "Version $NEW_TAG"
           git tag $NEW_TAG
           git push origin $NEW_TAG
 
