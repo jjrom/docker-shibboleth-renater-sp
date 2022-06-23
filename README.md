@@ -71,12 +71,18 @@ Pour les passer en argument à votre conteneur docker, vous pouvez les positionn
 5) Vous pouvez tester votre fournisseur de service en naviguant sur l'URL suivante : https://votre-ip/my-protected-url/
 
 
-### Demo
+## Demo
 
 Pour lancer l'image docker depuis le docker-compose exemple en test ou en prod (cf section configuration) :
 ```bash
 docker-compose up
 ```
+
+## Développements
+
+### Comment publier une nouvelle version de cette image ?
+
+Il est nécessaire d'utiliser [l'action github create-release.yml](https://github.com/abes-esr/docker-shibboleth-renater-sp/actions/workflows/create-release.yml), merci de se référer à cette procédure : https://github.com/abes-esr/abes-politique-developpement/blob/main/01-Gestion%20du%20code%20source.md#publier-une-nouvelle-release-dune-application
 
 ## Voir aussi
 
