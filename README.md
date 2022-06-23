@@ -9,7 +9,9 @@ Fonctionnement : ce fournisseur de service s'intégre sur une application tiers 
 Technologies : cette image docker utilise un serveur apache (basée sur son image docker officielle) et mod_shib (module Shibboleth s'intégrant dans apache). Ce sont les briques techniques préconisées par RENATER pour implémenter un fournisseur de service.
 
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vRMfhC8StjZi8KUXUnAoQA7MJG4BymqQue0dIxnsR9-VchR9dJTOh3tRU8j_3ngpvPaU9rReELFVrG8/pub?w=945&amp;h=665">
+
 (le [lien](https://docs.google.com/drawings/d/1lGluW3Kpq7p2j2Hx8SmAqkDAKFmw6Zu7P8YuhTPV0ew/edit) pour modifier le schéma)
+
 ## Comment construire cette image docker ?
 
 Cette image est construite et publiée automatiquement sur dockerhub à l'aide de github action: TODO
