@@ -12,24 +12,11 @@ Technologies : cette image docker utilise un serveur apache (basée sur son imag
 
 (le [lien](https://docs.google.com/drawings/d/1lGluW3Kpq7p2j2Hx8SmAqkDAKFmw6Zu7P8YuhTPV0ew/edit) pour modifier le schéma)
 
-## Comment construire cette image docker ?
 
-Cette image est construite et publiée automatiquement sur dockerhub à l'aide de github action: TODO
-
-Mais il est également possible de la construire localement avec cette commande (utile pour le développement de cette image) :
-```bash
-cd docker-shibboleth-sp/
-docker-compose build
-```
-
-A noter que la dernière version disponible de l'image est la suivante:
-```bash
-docker pull abesesr/docker-shibboleth-renater-sp:1.0.0
-```
 
 ## Comment utiliser cette image ?
 
-## Configuration
+### Configuration
 
 Les variables suivantes sont utilisées pour personnaliser votre conteneur :
 - ``RENATER_SP_TEST_OR_PROD`` : pour basculer facilement le fournisseur de service sur la fédération RENATER de TEST ou de PROD (valeur par défaut: ``TEST``)
@@ -44,7 +31,7 @@ Les variables suivantes sont utilisées pour personnaliser votre conteneur :
 Pour les passer en argument à votre conteneur docker, vous pouvez les positionner dans un fichier ``.env`` à coté de votre ``docker-compose.yml`` en prenant exemple sur [``.env-dist``](https://github.com/abes-esr/docker-shibboleth-renater-sp/blob/main/.env-dist) qui propose des exemples de valeurs. Votre ``docker-compose.yml`` doit alors transmettre ces variables au conteneur en les précisant dans la section [``environment`` comme dans cet exemple](https://github.com/abes-esr/docker-shibboleth-renater-sp/blob/0fdb9619c4e4b8bb2f50dfda1f93c4a1d65df4bb/docker-compose.yml#L13-L23).
 
 
-## Configuration en TEST
+### Configuration en TEST
 
 1) Vous avez uniquement besoin de personnaliser les valeurs du ``.env`` (cf section ci-dessus) en précisant ``RENATER_SP_TEST_OR_PROD="TEST"``, puis vous pouvez lancer votre conteneur puis consulter l'URL https://votre-ip/Shibboleth.sso/Metadata pour récupérer les métadonnées attendue dans l'étape 2 par le guichet RENATER.
 
@@ -52,7 +39,7 @@ Pour les passer en argument à votre conteneur docker, vous pouvez les positionn
 
 3) Vous pouvez alors tester votre fournisseur de service en naviguant sur l'URL suivante : https://votre-ip/my-protected-url/ (adapter en fonction de la valeur de ``RENATER_SP_HTTPD_PROTECTED_PATH``)
 
-## Configuration en PROD
+### Configuration en PROD
 
 1) Vous avez besoin de personnaliser les valeurs du ``.env`` (cf section ci-dessus) en précisant ``RENATER_SP_TEST_OR_PROD="PROD"``
 
@@ -71,14 +58,31 @@ Pour les passer en argument à votre conteneur docker, vous pouvez les positionn
 5) Vous pouvez tester votre fournisseur de service en naviguant sur l'URL suivante : https://votre-ip/my-protected-url/
 
 
-## Demo
+### Démarrer l'application
 
-Pour lancer l'image docker depuis le docker-compose exemple en test ou en prod (cf section configuration) :
+Pour démarrer l'application depuis le [docker-compose exemple](https://github.com/abes-esr/docker-shibboleth-renater-sp/blob/main/docker-compose.yml) :
 ```bash
+cd docker-shibboleth-renater-sp/
+cp .env-dist .env
+# personnalisez les valeurs de .env
+
 docker-compose up
 ```
 
+Vous pouvez alors vous baser sur le [docker-compose.yml exemple](https://github.com/abes-esr/docker-shibboleth-renater-sp/blob/main/docker-compose.yml) pour l'intégrer dans votre application. A noter que la dernière version disponible de l'image est la suivante :
+```bash
+docker pull abesesr/docker-shibboleth-renater-sp:1.0.0
+```
+
 ## Développements
+
+### Comment construire cette image docker ?
+
+Cette image est construite et publiée automatiquement sur dockerhub à l'aide de github action mais il est également possible de la construire localement avec cette commande (utile pour le développement de cette image) :
+```bash
+cd docker-shibboleth-sp/
+docker-compose build
+```
 
 ### Comment publier une nouvelle version de cette image ?
 
