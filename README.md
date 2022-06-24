@@ -2,7 +2,7 @@
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/abesesr/docker-shibboleth-renater-sp.svg)](https://hub.docker.com/r/abesesr/docker-shibboleth-renater-sp/) [![build-test-pubtodockerhub](https://github.com/abes-esr/docker-shibboleth-renater-sp/actions/workflows/build-test-pubtodockerhub.yml/badge.svg)](https://github.com/abes-esr/docker-shibboleth-renater-sp/actions/workflows/build-test-pubtodockerhub.yml)
 
-Ce dépôt propose une image docker générique permettant de mettre en place un fournisseur de service pré-connecté sur la [Fédération d'identités Education-Recherche (FER)](https://services.renater.fr/federation/index).
+Ce dépôt propose une image docker 🐳 générique permettant de mettre en place un fournisseur de service pré-connecté sur la [Fédération d'identités Education-Recherche (FER)](https://services.renater.fr/federation/index).
 
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vSTwzl0nQDoAVwzCUnAC9I5icDhcA2_YlHn6Glx1GFdiZSRFGdA9EPbeR50kMP6njUfsDeRut_L9aXJ/pub?w=301&amp;h=216">
 
