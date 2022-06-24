@@ -91,6 +91,7 @@ Il est nécessaire d'utiliser [l'action github create-release.yml](https://githu
 ## Voir aussi
 
 - Image dérivée de https://github.com/BibCnrs/docker-shibboleth-sp avec un exemple de configuration ici https://github.com/BibCnrs/BibRP/
+- Exemple d'utilisation ici : https://github.com/abes-esr/theses-docker
 - Cette image s'inspire aussi de :
   - https://github.com/mconf/apache-shib-docker/
   - https://gitlab.oit.duke.edu/devil-ops/duke-shibboleth-container
