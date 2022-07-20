@@ -28,7 +28,7 @@ RUN sed -i \
 
 # apache conf and shib config
 # (templates in order to be able to customize it fro external parameters)
-COPY ./httpd-vhosts.conf /usr/local/apache2/conf/extra/httpd-vhosts.conf
+COPY ./httpd-vhosts.conf /usr/local/apache2/conf/extra/httpd-vhosts.conf.orig
 COPY ./shibboleth/ /etc/shibboleth/
 
 # redirect apache logs to docker stdout/stderr

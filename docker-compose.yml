@@ -18,9 +18,14 @@ services:
       - RENATER_SP_ADMIN_MAIL
       - RENATER_SP_HTTPD_SERVER_NAME
       - RENATER_SP_HTTPD_LOG_LEVEL
-      - RENATER_SP_HTTPD_PROTECTED_PATH
-      - RENATER_SP_HTTPD_PUBLIC_PROXY_TO
-      - RENATER_SP_HTTPD_PROTECTED_PROXY_TO
+      - RENATER_SP_HTTPD_PUBLIC_PATH_0
+      - RENATER_SP_HTTPD_PUBLIC_PROXY_TO_0
+      - RENATER_SP_HTTPD_PUBLIC_PATH_1
+      - RENATER_SP_HTTPD_PUBLIC_PROXY_TO_1
+      - RENATER_SP_HTTPD_PROTECTED_PATH_0
+      - RENATER_SP_HTTPD_PROTECTED_PROXY_TO_0
+      - RENATER_SP_HTTPD_PROTECTED_PATH_1
+      - RENATER_SP_HTTPD_PROTECTED_PROXY_TO_1
     restart: unless-stopped
     depends_on:
       - backend-example
@@ -29,6 +34,12 @@ services:
   # perfect for our shibboleth test because we need to show all the
   # attributes populated by the reverse proxy (shibboleth-sp container)
   # https://hub.docker.com/r/mendhak/http-https-echo
-  backend-example:
+  backend-example-home:
+    image: mendhak/http-https-echo:23
+    restart: unless-stopped
+  backend-example-api:
+    image: mendhak/http-https-echo:23
+    restart: unless-stopped
+  backend-example-protected:
     image: mendhak/http-https-echo:23
     restart: unless-stopped
