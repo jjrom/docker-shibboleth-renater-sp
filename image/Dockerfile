@@ -8,7 +8,7 @@ FROM httpd:2.4.54
 # https://packages.debian.org/search?keywords=apache2&searchon=names&suite=stable&section=all
 # https://packages.debian.org/search?keywords=libapache2-mod-shib&searchon=names&suite=stable&section=all
 RUN apt-get update \
-  && apt-get -y install apache2=2.4.53-1~deb11u1 libapache2-mod-shib=3.2.2+dfsg1-1 \
+  && apt-get -y install apache2=2.4.54-1~deb11u1 libapache2-mod-shib=3.2.2+dfsg1-1 \
   && apt-get clean \
   && apt-get -y autoremove
 
@@ -22,6 +22,7 @@ RUN sed -i \
   -e '/LoadModule proxy_http_module/s/^#//g' \
   -e '/LoadModule rewrite_module/s/^#//g' \
   -e '/LoadModule rewrite_module/a LoadModule mod_shib /usr/lib/apache2/modules/mod_shib.so' \
+  -e '/LoadModule macro_module/s/^#//g' \
   -e '/httpd-vhosts.conf/s/^#//g' \
   /usr/local/apache2/conf/httpd.conf
 
