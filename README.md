@@ -20,17 +20,9 @@ Technologies : cette image docker utilise un serveur apache (basée sur son imag
 
 ### Configuration
 
-Les variables suivantes sont utilisées pour personnaliser votre conteneur :
-- ``RENATER_SP_TEST_OR_PROD`` : pour basculer facilement le fournisseur de service sur la fédération RENATER de TEST ou de PROD (valeur par défaut: ``TEST``)
-- ``RENATER_SP_ENTITY_ID`` : l'identifiant technique de votre fournisseur de service (valeur par défaut: non-renseigné ; exemple de valeur : ``https://apollo-dev.theses.fr/sp``)
-- ``RENATER_SP_ADMIN_MAIL`` : l'adresse mail de contact qui sera utilisé dans les page d'erreur d'Apache et de Shibboleth (valeur par défaut : non-renseigné ; exemple de valeur: ``admin@theses.fr``)
-- ``RENATER_SP_HTTPD_SERVER_NAME`` : le nom public du serveur web de votre fournisseur de service (valeur par défaut : non-renseigné ; exemple de valeur : ``https://apollo-dev.theses.fr``)
-- ``RENATER_SP_HTTPD_LOG_LEVEL`` : le niveau de log du serveur apache (valeur par défaut ``info ssl:warn``)
-- ``RENATER_SP_HTTPD_PROTECTED_PATH`` : le chemin à protéger par une authentification dans la fédération d'identités (valeur par défaut: ``/my-protected-url/``)
-- ``RENATER_SP_HTTPD_PUBLIC_PROXY_TO`` : l'adresse du serveur (interne) de votre application qui sera "reverse proxifiée" en mode non authentifié, elle correspond au chemin ``/`` de l'URL publique
-- ``RENATER_SP_HTTPD_PROTECTED_PROXY_TO`` : l'adresse du serveur (interne) de votre application qui sera "reverse proxifiée" en mode authentifié, elle correspond au chemin ``/my-protected-url/`` de l'URL publique (à adapter avec la valeur passée dans ``RENATER_SP_HTTPD_PROTECTED_PATH``). Dans la pluspart des cas, la valeur de ``RENATER_SP_HTTPD_PROTECTED_PROXY_TO`` vaut la même chose que ``RENATER_SP_HTTPD_PUBLIC_PROXY_TO`` car l'application à authentifier est la même que celle qui possède des pages publique.
+Pour configurer le conteneur, vous devez lui passer des variables d'environnement, pour cela vous pouvez créer un fichier ``.env`` à coté de votre ``docker-compose.yml`` en prenant exemple sur [``.env-dist``](./.env-dist) qui propose des exemples de valeurs en expliquant leur signification.
 
-Pour les passer en argument à votre conteneur docker, vous pouvez les positionner dans un fichier ``.env`` à coté de votre ``docker-compose.yml`` en prenant exemple sur [``.env-dist``](https://github.com/abes-esr/docker-shibboleth-renater-sp/blob/main/.env-dist) qui propose des exemples de valeurs. Votre ``docker-compose.yml`` doit alors transmettre ces variables au conteneur en les précisant dans la section [``environment`` comme dans cet exemple](https://github.com/abes-esr/docker-shibboleth-renater-sp/blob/0fdb9619c4e4b8bb2f50dfda1f93c4a1d65df4bb/docker-compose.yml#L13-L23).
+Votre ``docker-compose.yml`` doit alors transmettre ces variables au conteneur en les précisant dans la section [``environment`` comme dans cet exemple](https://github.com/abes-esr/docker-shibboleth-renater-sp/blob/0fdb9619c4e4b8bb2f50dfda1f93c4a1d65df4bb/docker-compose.yml#L13-L23).
 
 
 ### Configuration en TEST
