@@ -25,7 +25,7 @@ Pour configurer le conteneur, vous devez lui passer des variables d'environnemen
 Votre ``docker-compose.yml`` doit alors transmettre ces variables au conteneur en les précisant dans la section [``environment`` comme dans cet exemple](https://github.com/abes-esr/docker-shibboleth-renater-sp/blob/0fdb9619c4e4b8bb2f50dfda1f93c4a1d65df4bb/docker-compose.yml#L13-L23).
 
 Si vous souhaitez injecter des configurations apache spécifiques dans la configuration du serveur apache, vous pouvez ajouter des fichiers de configuration via des volumes aux endroits suivants dans le conteneur :
-- ``/usr/local/apache2/conf/extra/httpd-vhosts.inc.conf`` : pour injecter de la configuration au niveau global du virtualhost ([ici exactement](./image/httpd-vhosts.conf#22))
+- ``/usr/local/apache2/conf/extra/httpd-vhosts.inc.conf`` : pour injecter de la configuration au niveau global du virtualhost ([ici exactement](./image/httpd-vhosts.conf#L38-L39))
 - ``/usr/local/apache2/conf/extra/httpd-vhosts.public_proxy.inc.conf`` : pour injecter de la configuration au niveau du ProxyPass des URL publiques ([ici exactement](./image/httpd-vhosts.conf#22))
 - ``/usr/local/apache2/conf/extra/httpd-vhosts.protected_proxy.inc.conf`` : pour injecter de la configuration au niveau du ProxyPass des URL protégées ([ici exactement](./image/httpd-vhosts.conf#22))
 
