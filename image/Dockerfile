@@ -23,6 +23,7 @@ RUN sed -i \
   -e '/LoadModule rewrite_module/s/^#//g' \
   -e '/LoadModule rewrite_module/a LoadModule mod_shib /usr/lib/apache2/modules/mod_shib.so' \
   -e '/LoadModule macro_module/s/^#//g' \
+  -e '/LoadModule headers_module/s/^#//g' \
   -e '/httpd-vhosts.conf/s/^#//g' \
   /usr/local/apache2/conf/httpd.conf
 
