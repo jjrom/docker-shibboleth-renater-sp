@@ -10,6 +10,8 @@ services:
     image: abesesr/docker-shibboleth-renater-sp:1.1.2
     ports:
       - 443:443
+    volumes:
+      - ./volume/httpd-vhosts.inc.conf:/usr/local/apache2/conf/extra/httpd-vhosts.inc.conf
     environment:
       # container parameters, values comming from .env
       # (see .env-dist example)
