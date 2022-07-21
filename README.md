@@ -26,8 +26,8 @@ Votre ``docker-compose.yml`` doit alors transmettre ces variables au conteneur e
 
 Si vous souhaitez injecter des configurations apache spécifiques dans la configuration du serveur apache, vous pouvez ajouter des fichiers de configuration via des volumes aux endroits suivants dans le conteneur :
 - ``/usr/local/apache2/conf/extra/httpd-vhosts.inc.conf`` : pour injecter de la configuration au niveau global du virtualhost ([ici exactement](./image/httpd-vhosts.conf#L38-L39))
-- ``/usr/local/apache2/conf/extra/httpd-vhosts.public_proxy.inc.conf`` : pour injecter de la configuration au niveau du ProxyPass des URL publiques ([ici exactement](./image/httpd-vhosts.conf#44))
-- ``/usr/local/apache2/conf/extra/httpd-vhosts.protected_proxy.inc.conf`` : pour injecter de la configuration au niveau du ProxyPass des URL protégées ([ici exactement](./image/httpd-vhosts.conf#71))
+- ``/usr/local/apache2/conf/extra/httpd-vhosts.public_proxy.inc.conf`` : pour injecter de la configuration au niveau du ProxyPass des URL publiques ([ici exactement](./image/httpd-vhosts.conf#L44))
+- ``/usr/local/apache2/conf/extra/httpd-vhosts.protected_proxy.inc.conf`` : pour injecter de la configuration au niveau du ProxyPass des URL protégées ([ici exactement](./image/httpd-vhosts.conf#L71))
 
 
 ### Configuration en TEST
