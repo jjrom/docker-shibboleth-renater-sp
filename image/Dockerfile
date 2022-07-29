@@ -15,11 +15,13 @@ RUN apt-get update \
 # ssl: for apache beeing able to listen with HTTPS (SGY 10/06/2022: WHY is it mandatory to have HTTPS ?)
 # shib: the famouse apache mod for beeing able to authenticate users thanks to shibboleth and SAML
 # proxy_http: for apache beeing able to proxy user's HTTP requests to the real application
+# remoteip: for apache beeing able to log real IP addresses instead of the above reverse proxy one
 RUN sed -i \
   -e 's/^#\(LoadModule .*mod_ssl.so\)/\1/' \
   -e 's/^#\(LoadModule .*mod_socache_shmcb.so\)/\1/' \
   -e '/LoadModule proxy_module/s/^#//g' \
   -e '/LoadModule proxy_http_module/s/^#//g' \
+  -e '/LoadModule remoteip_module/s/^#//g' \
   -e '/LoadModule rewrite_module/s/^#//g' \
   -e '/LoadModule rewrite_module/a LoadModule mod_shib /usr/lib/apache2/modules/mod_shib.so' \
   -e '/LoadModule macro_module/s/^#//g' \
