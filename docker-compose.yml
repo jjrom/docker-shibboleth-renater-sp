@@ -6,6 +6,7 @@ version: "3.5"
 
 services:
   shibboleth-sp:
+    container_name: shibboleth-sp
     build: ./image/
     image: abesesr/docker-shibboleth-renater-sp:1.2.0
     ports:
@@ -20,6 +21,7 @@ services:
       - RENATER_SP_ADMIN_MAIL
       - RENATER_SP_HTTPD_SERVER_NAME
       - RENATER_SP_HTTPD_LOG_LEVEL
+      - RENATER_SP_HTTPD_LOG_FORMAT
       - RENATER_SP_HTTPD_PUBLIC_PATH_0
       - RENATER_SP_HTTPD_PUBLIC_PROXY_TO_0
       - RENATER_SP_HTTPD_PUBLIC_PATH_1
@@ -37,11 +39,14 @@ services:
   # attributes populated by the reverse proxy (shibboleth-sp container)
   # https://hub.docker.com/r/mendhak/http-https-echo
   backend-example-home:
+    container_name: backend-example-home
     image: mendhak/http-https-echo:23
     restart: unless-stopped
   backend-example-api:
+    container_name: backend-example-api
     image: mendhak/http-https-echo:23
     restart: unless-stopped
   backend-example-protected:
+    container_name: backend-example-protected
     image: mendhak/http-https-echo:23
     restart: unless-stopped
