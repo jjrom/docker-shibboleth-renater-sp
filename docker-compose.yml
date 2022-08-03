@@ -30,6 +30,8 @@ services:
       - RENATER_SP_HTTPD_PROTECTED_PROXY_TO_0
       - RENATER_SP_HTTPD_PROTECTED_PATH_1
       - RENATER_SP_HTTPD_PROTECTED_PROXY_TO_1
+      - RENATER_SP_HTTPD_PROTECTED_REQUIRE_1_0
+      - RENATER_SP_HTTPD_PROTECTED_REQUIRE_1_1
     restart: unless-stopped
     depends_on:
       - backend-example
@@ -48,5 +50,9 @@ services:
     restart: unless-stopped
   backend-example-protected:
     container_name: backend-example-protected
+    image: mendhak/http-https-echo:23
+    restart: unless-stopped
+  backend-example-protected2:
+    container_name: backend-example-protected2
     image: mendhak/http-https-echo:23
     restart: unless-stopped
