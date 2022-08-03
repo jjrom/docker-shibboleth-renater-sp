@@ -25,7 +25,7 @@ do
 done
 
 # for easy debug: display the container parameters at startup
-set | grep -e "^RENATER_SP_" | grep -v -e "\=$"
+set | grep -e "^RENATER_SP_" | grep -v -e "=$" | grep -v -e "='#'$"
 
 
 # check for mandatory parameters
