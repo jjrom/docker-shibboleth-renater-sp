@@ -114,6 +114,18 @@
         <!-- Map to extract attributes from SAML assertions. -->
         <AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml" />
 
+        <!-- Extract standard SAML assertion values and map it as a classic attribute
+             see https://shibboleth.atlassian.net/wiki/spaces/SHIB2/pages/2577072276/NativeSPAttributeExtractor#NativeSPAttributeExtractor-AssertionAttributeExtractor(Version2.5andAbove)
+             so that it's possible to used it in apache config, eg: "Require shib-attr Shib-Identity-Provider"
+        -->
+        <AttributeExtractor type="Assertion"
+          Issuer="Shib-Identity-Provider"
+          AuthnInstant="Shib-Authentication-Instant"
+          AuthnContextClassRef="Shib-AuthnContext-Class"
+          AuthnContextDeclRef="Shib-AuthnContext-Decl"
+          SessionIndex="Shib-Session-Index"
+        />
+
         <!-- Use a SAML query if no attributes are supplied during SSO. -->
         <AttributeResolver type="Query" subjectMatch="true" />
 

@@ -10,14 +10,23 @@ export RENATER_SP_HTTPD_LOG_LEVEL=${RENATER_SP_HTTPD_LOG_LEVEL:='info ssl:warn'}
 export RENATER_SP_HTTPD_LOG_FORMAT=${RENATER_SP_HTTPD_LOG_FORMAT:='%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"'}
 for i in 0 1 2 3 4 5 6 7 8 9
 do
-	export RENATER_SP_HTTPD_PUBLIC_PATH_${i}=${RENATER_SP_HTTPD_PUBLIC_PATH_${i}}
-	export RENATER_SP_HTTPD_PUBLIC_PROXY_TO_${i}=${RENATER_SP_HTTPD_PUBLIC_PROXY_TO_${i}}
-	export RENATER_SP_HTTPD_PROTECTED_PATH_${i}=${RENATER_SP_HTTPD_PROTECTED_PATH_${i}}
-	export RENATER_SP_HTTPD_PROTECTED_PROXY_TO_${i}=${RENATER_SP_HTTPD_PROTECTED_PROXY_TO_${i}}
+	varname="RENATER_SP_HTTPD_PUBLIC_PATH_${i}" && export RENATER_SP_HTTPD_PUBLIC_PATH_${i}="${!varname}"
+	varname="RENATER_SP_HTTPD_PUBLIC_PATH_${i}" && export RENATER_SP_HTTPD_PUBLIC_PATH_${i}="${!varname}"
+	varname="RENATER_SP_HTTPD_PUBLIC_PROXY_TO_${i}" && export RENATER_SP_HTTPD_PUBLIC_PROXY_TO_${i}="${!varname}"
+	varname="RENATER_SP_HTTPD_PROTECTED_PATH_${i}" && export RENATER_SP_HTTPD_PROTECTED_PATH_${i}="${!varname}"
+	varname="RENATER_SP_HTTPD_PROTECTED_PROXY_TO_${i}" && export RENATER_SP_HTTPD_PROTECTED_PROXY_TO_${i}="${!varname}"
+	for j in 0 1 2
+	do
+		varname="RENATER_SP_HTTPD_PROTECTED_REQUIRE_${i}_${j}" && export RENATER_SP_HTTPD_PROTECTED_REQUIRE_${i}_${j}="${!varname}"
+		if [ "${!varname}" = "" ]; then
+			export RENATER_SP_HTTPD_PROTECTED_REQUIRE_${i}_${j}="#"
+		fi
+	done
 done
 
 # for easy debug: display the container parameters at startup
-set | grep -e "^RENATER_SP_"
+set | grep -e "^RENATER_SP_" | grep -v -e "\=$"
+
 
 # check for mandatory parameters
 SEE_ALSO_LINK="Have a look to https://github.com/abes-esr/docker-shibboleth-sp/blob/main/.env-dist for values examples."
@@ -48,6 +57,8 @@ if [ -z ${RENATER_SP_HTTPD_PROTECTED_PATH_6} ]; then  sed -i 's#^.*RENATER_SP_HT
 if [ -z ${RENATER_SP_HTTPD_PROTECTED_PATH_7} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PROTECTED_PATH_7.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
 if [ -z ${RENATER_SP_HTTPD_PROTECTED_PATH_8} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PROTECTED_PATH_8.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
 if [ -z ${RENATER_SP_HTTPD_PROTECTED_PATH_9} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PROTECTED_PATH_9.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
+
+
 
 # instanciates shibboleth2.xml from it's template
 cp -f /etc/shibboleth/shibboleth2.orig.xml /etc/shibboleth/shibboleth2.xml
