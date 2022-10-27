@@ -37,7 +37,7 @@ if [ -z ${RENATER_SP_HTTPD_PUBLIC_PROXY_TO_0} ]; then echo "Error: RENATER_SP_HT
 if [ -z ${RENATER_SP_HTTPD_PROTECTED_PATH_0} ]; then echo "Error: RENATER_SP_HTTPD_PROTECTED_PATH_0 is a mandatory parameter. ${SEE_ALSO_LINK}" && exit 1 ; fi
 if [ -z ${RENATER_SP_HTTPD_PROTECTED_PROXY_TO_0} ]; then echo "Error: RENATER_SP_HTTPD_PROTECTED_PROXY_TO_0 is a mandatory parameter. ${SEE_ALSO_LINK}" && exit 1 ; fi
 
-# update vhosts depending on public and protected path
+# cleanup unused vhosts
 cp -f /usr/local/apache2/conf/extra/httpd-vhosts.conf.orig /usr/local/apache2/conf/extra/httpd-vhosts.conf
 if [ -z ${RENATER_SP_HTTPD_PUBLIC_PATH_1} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PUBLIC_PATH_1.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
 if [ -z ${RENATER_SP_HTTPD_PUBLIC_PATH_2} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PUBLIC_PATH_2.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
