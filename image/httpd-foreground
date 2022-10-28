@@ -1,0 +1,104 @@
+#!/bin/bash
+
+# forward parameters to docker process (apache and shibd)
+export RENATER_SP_TEST_OR_PROD=${RENATER_SP_TEST_OR_PROD:='TEST'}
+export RENATER_SP_TEST_OR_PROD=${RENATER_SP_TEST_OR_PROD^^} # force upercase: TEST or PROD
+export RENATER_SP_ENTITY_ID=${RENATER_SP_ENTITY_ID}
+export RENATER_SP_ADMIN_MAIL=${RENATER_SP_ADMIN_MAIL:='admin@exemple.fr'}
+export RENATER_SP_CERTIFICATE_CRT=${RENATER_SP_CERTIFICATE_CRT:='ssl/server-demo.crt'}
+export RENATER_SP_CERTIFICATE_KEY=${RENATER_SP_CERTIFICATE_KEY:='ssl/server-demo.key'}
+export RENATER_SP_HTTPD_SERVER_NAME=${RENATER_SP_HTTPD_SERVER_NAME}
+export RENATER_SP_HTTPD_LOG_LEVEL=${RENATER_SP_HTTPD_LOG_LEVEL:='info ssl:warn'}
+export RENATER_SP_HTTPD_LOG_FORMAT=${RENATER_SP_HTTPD_LOG_FORMAT:='%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"'}
+for i in 0 1 2 3 4 5 6 7 8 9
+do
+	varname="RENATER_SP_HTTPD_PUBLIC_PATH_${i}" && export RENATER_SP_HTTPD_PUBLIC_PATH_${i}="${!varname}"
+	varname="RENATER_SP_HTTPD_PUBLIC_PATH_${i}" && export RENATER_SP_HTTPD_PUBLIC_PATH_${i}="${!varname}"
+	varname="RENATER_SP_HTTPD_PUBLIC_PROXY_TO_${i}" && export RENATER_SP_HTTPD_PUBLIC_PROXY_TO_${i}="${!varname}"
+	varname="RENATER_SP_HTTPD_PROTECTED_PATH_${i}" && export RENATER_SP_HTTPD_PROTECTED_PATH_${i}="${!varname}"
+	varname="RENATER_SP_HTTPD_PROTECTED_PROXY_TO_${i}" && export RENATER_SP_HTTPD_PROTECTED_PROXY_TO_${i}="${!varname}"
+	for j in 0 1 2
+	do
+		varname="RENATER_SP_HTTPD_PROTECTED_REQUIRE_${i}_${j}" && export RENATER_SP_HTTPD_PROTECTED_REQUIRE_${i}_${j}="${!varname}"
+		if [ "${!varname}" = "" ]; then
+			export RENATER_SP_HTTPD_PROTECTED_REQUIRE_${i}_${j}="#"
+		fi
+	done
+done
+
+# for easy debug: display the container parameters at startup
+set | grep -e "^RENATER_SP_" | grep -v -e "=$" | grep -v -e "='#'$"
+
+
+# check for mandatory parameters
+SEE_ALSO_LINK="Have a look to https://github.com/abes-esr/docker-shibboleth-sp/blob/main/.env-dist for values examples."
+if [ -z ${RENATER_SP_ENTITY_ID} ]; then echo "Error: RENATER_SP_ENTITY_ID is a mandatory parameter. ${SEE_ALSO_LINK}" && exit 1 ; fi
+if [ -z ${RENATER_SP_HTTPD_SERVER_NAME} ]; then echo "Error: RENATER_SP_HTTPD_SERVER_NAME is a mandatory parameter. ${SEE_ALSO_LINK}" && exit 1 ; fi
+if [ -z ${RENATER_SP_HTTPD_PUBLIC_PATH_0} ]; then echo "Error: RENATER_SP_HTTPD_PUBLIC_PATH_0 is a mandatory parameter. ${SEE_ALSO_LINK}" && exit 1 ; fi
+if [ -z ${RENATER_SP_HTTPD_PUBLIC_PROXY_TO_0} ]; then echo "Error: RENATER_SP_HTTPD_PUBLIC_PROXY_TO_0 is a mandatory parameter. ${SEE_ALSO_LINK}" && exit 1 ; fi
+if [ -z ${RENATER_SP_HTTPD_PROTECTED_PATH_0} ]; then echo "Error: RENATER_SP_HTTPD_PROTECTED_PATH_0 is a mandatory parameter. ${SEE_ALSO_LINK}" && exit 1 ; fi
+if [ -z ${RENATER_SP_HTTPD_PROTECTED_PROXY_TO_0} ]; then echo "Error: RENATER_SP_HTTPD_PROTECTED_PROXY_TO_0 is a mandatory parameter. ${SEE_ALSO_LINK}" && exit 1 ; fi
+
+# cleanup unused vhosts
+cp -f /usr/local/apache2/conf/extra/httpd-vhosts.conf.orig /usr/local/apache2/conf/extra/httpd-vhosts.conf
+if [ -z ${RENATER_SP_HTTPD_PUBLIC_PATH_1} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PUBLIC_PATH_1.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
+if [ -z ${RENATER_SP_HTTPD_PUBLIC_PATH_2} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PUBLIC_PATH_2.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
+if [ -z ${RENATER_SP_HTTPD_PUBLIC_PATH_3} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PUBLIC_PATH_3.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
+if [ -z ${RENATER_SP_HTTPD_PUBLIC_PATH_4} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PUBLIC_PATH_4.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
+if [ -z ${RENATER_SP_HTTPD_PUBLIC_PATH_5} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PUBLIC_PATH_5.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
+if [ -z ${RENATER_SP_HTTPD_PUBLIC_PATH_6} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PUBLIC_PATH_6.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
+if [ -z ${RENATER_SP_HTTPD_PUBLIC_PATH_7} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PUBLIC_PATH_7.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
+if [ -z ${RENATER_SP_HTTPD_PUBLIC_PATH_8} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PUBLIC_PATH_8.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
+if [ -z ${RENATER_SP_HTTPD_PUBLIC_PATH_9} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PUBLIC_PATH_9.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
+if [ -z ${RENATER_SP_HTTPD_PROTECTED_PATH_1} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PROTECTED_PATH_1.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
+if [ -z ${RENATER_SP_HTTPD_PROTECTED_PATH_2} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PROTECTED_PATH_2.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
+if [ -z ${RENATER_SP_HTTPD_PROTECTED_PATH_3} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PROTECTED_PATH_3.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
+if [ -z ${RENATER_SP_HTTPD_PROTECTED_PATH_4} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PROTECTED_PATH_4.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
+if [ -z ${RENATER_SP_HTTPD_PROTECTED_PATH_5} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PROTECTED_PATH_5.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
+if [ -z ${RENATER_SP_HTTPD_PROTECTED_PATH_6} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PROTECTED_PATH_6.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
+if [ -z ${RENATER_SP_HTTPD_PROTECTED_PATH_7} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PROTECTED_PATH_7.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
+if [ -z ${RENATER_SP_HTTPD_PROTECTED_PATH_8} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PROTECTED_PATH_8.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
+if [ -z ${RENATER_SP_HTTPD_PROTECTED_PATH_9} ]; then  sed -i 's#^.*RENATER_SP_HTTPD_PROTECTED_PATH_9.*$##g' /usr/local/apache2/conf/extra/httpd-vhosts.conf ; fi
+
+
+
+# instanciates shibboleth2.xml from it's template
+cp -f /etc/shibboleth/shibboleth2.orig.xml /etc/shibboleth/shibboleth2.xml
+sed -i "s#https://replaceme/sp#${RENATER_SP_ENTITY_ID}#" /etc/shibboleth/shibboleth2.xml
+sed -i "s#admin@replace.me#${RENATER_SP_ADMIN_MAIL}#" /etc/shibboleth/shibboleth2.xml
+sed -i "s#ssl/server-replaceme.crt#${RENATER_SP_CERTIFICATE_CRT}#" /etc/shibboleth/shibboleth2.xml
+sed -i "s#ssl/server-replaceme.key#${RENATER_SP_CERTIFICATE_KEY}#" /etc/shibboleth/shibboleth2.xml
+if [ "$RENATER_SP_TEST_OR_PROD" = "PROD" ]; then
+	# comment the TEST blocs
+	sed -i 's#<!-- RENATER_SP_TEST_OR_PROD=TEST BEGIN -->#<!-- RENATER_SP_TEST_OR_PROD=TEST BEGIN --><!--#g' /etc/shibboleth/shibboleth2.xml
+	sed -i 's#<!-- RENATER_SP_TEST_OR_PROD=TEST END -->#--><!-- RENATER_SP_TEST_OR_PROD=TEST END -->#g' /etc/shibboleth/shibboleth2.xml
+	# uncomment the PROD blocs
+	sed -i 's#<!-- RENATER_SP_TEST_OR_PROD=PROD BEGIN --><!--#<!-- RENATER_SP_TEST_OR_PROD=PROD BEGIN -->#g' /etc/shibboleth/shibboleth2.xml
+	sed -i 's#--><!-- RENATER_SP_TEST_OR_PROD=PROD END -->#<!-- RENATER_SP_TEST_OR_PROD=PROD END -->#g' /etc/shibboleth/shibboleth2.xml
+else
+	if [ "$RENATER_SP_TEST_OR_PROD" != "TEST" ]; then
+		echo "Error: RENATER_SP_TEST_OR_PROD value must be set to TEST ou PROD (your current value is '$RENATER_SP_TEST_OR_PROD')"
+		exit 1
+	fi
+fi
+
+
+# shibd is a mandatory daemon, and it must run into the same container as apache
+# (bad practice for docker but it seams not possible to split it into 2 separated containers)
+echo "Starting shibd daemon... (could be long because of metadata download stuff)"
+/etc/init.d/shibd start
+# then we forward shibd logs to stdout and stderr to be able to see it in docker logs
+# 202206174:
+#   don't know why "RUN ln -sf /proc/1/fd/1 /var/log/shibboleth/shibd.log"
+#   from the Dockerfile is not working.
+{
+tail -f /var/log/shibboleth/shibd.log 		>> /proc/1/fd/1 ;
+tail -f /var/log/shibboleth/shibd_warn.log 	>> /proc/1/fd/2 ; 
+tail -f /var/log/shibboleth/transaction.log >> /proc/1/fd/1 ;
+tail -f /var/log/shibboleth/signature.log 	>> /proc/1/fd/1
+} &
+
+
+# Run apache daemon foreground (monitored by docker)
+rm -f /usr/local/apache2/logs/httpd.pid
+exec httpd -DFOREGROUND "$@"

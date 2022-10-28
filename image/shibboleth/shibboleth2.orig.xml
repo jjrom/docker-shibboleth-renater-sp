@@ -1,0 +1,143 @@
+<!-- Fichier inspiré de cette doc:
+     https://services.renater.fr/federation/documentation/guides-installation/sp3/chap04 -->
+<SPConfig xmlns="urn:mace:shibboleth:3.0:native:sp:config"
+    xmlns:conf="urn:mace:shibboleth:3.0:native:sp:config"
+    xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
+    xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+    xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+    clockSkew="180">
+
+    <OutOfProcess logger="shibd.logger" tranLogFormat="%u|%s|%IDP|%i|%ac|%t|%attr|%n|%b|%E|%S|%SS|%L|%UA|%a">
+    </OutOfProcess>
+
+    <!-- The ApplicationDefaults element is where most of Shibboleth's SAML bits are defined. -->
+    <ApplicationDefaults entityID="https://replaceme/sp"
+                         REMOTE_USER="eppn subject-id pairwise-id persistent-id"
+                         cipherSuites="DEFAULT:!EXP:!LOW:!aNULL:!eNULL:!DES:!IDEA:!SEED:!RC4:!3DES:!kRSA:!SSLv2:!SSLv3:!TLSv1:!TLSv1.1" >
+
+        <!--
+        Controls session lifetimes, address checks, cookie handling, and the protocol handlers.
+        You MUST supply an effectively unique handlerURL value for each of your applications.
+        The value defaults to /Shibboleth.sso, and should be a relative path, with the SP computing
+        a relative value based on the virtual host. Using handlerSSL="true", the default, will force
+        the protocol to be https. You should also set cookieProps to "https" for SSL-only sites.
+        Note that while we default checkAddress to "false", this has a negative impact on the
+        security of your site. Stealing sessions via cookie theft is much easier with this disabled.
+        -->
+        <Sessions lifetime="28800" timeout="3600" relayState="ss:mem"
+                  consistentAddress="true" handlerURL="/Shibboleth.sso"
+                  checkAddress="false" handlerSSL="true" cookieProps="https">
+
+            <!-- Nous mettons ici en place une relation de fédération 
+                 (cf https://services.renater.fr/federation/outils/service-de-decouverte/index)
+                 le SP ira demandé au DS a quel IdP faut il déléguer l'authentification -->
+            <!-- RENATER_SP_TEST_OR_PROD=TEST BEGIN -->
+            <SSO discoveryProtocol="SAMLDS" discoveryURL="https://discovery.renater.fr/test"> 
+              SAML2
+            </SSO>
+            <!-- RENATER_SP_TEST_OR_PROD=TEST END -->
+            <!-- RENATER_SP_TEST_OR_PROD=PROD BEGIN --><!--
+            <SSO discoveryProtocol="SAMLDS" discoveryURL="https://discovery.renater.fr/renater"> 
+              SAML2
+            </SSO>
+            --><!-- RENATER_SP_TEST_OR_PROD=PROD END -->
+
+
+            <!-- Nous mettons ici en place une relation bilatérale :
+                 le SP ira toujours déléguer l'authentification à votre IDP -->
+<!-- 
+            <SSO entityID="https://monposte.fr/idp/shibboleth">
+              SAML2
+            </SSO>
+-->
+
+            <!-- Extension service that generates "approximate" metadata based on SP configuration. -->
+            <Handler type="MetadataGenerator" Location="/Metadata" signing="false"/>
+            
+            <!-- Route for debugging user attributs -->
+            <Handler type="Session" Location="/Session" showAttributeValues="true"/>
+
+            <!-- Status reporting service. -->
+            <Handler type="Status" Location="/Status" acl="127.0.0.1 ::1"/>
+
+        </Sessions>
+
+        <Errors supportContact="admin@replace.me"
+              metadata="metadataError_fr.html"
+              access="accessError_fr.html"
+              ssl="sslError_fr.html"
+              localLogout="localLogout_fr.html"
+              globalLogout="globalLogout_fr.html"
+              helpLocation="/about.html"
+              styleSheet="/shibboleth-sp/main.css"/>
+
+        <!--
+        Metadonnées des IdP la fédération RENATER ESR
+        ces fichiers seront téléchargés par le SP à interval réguliers (reloadInterval)
+        et permettent au SP de leur faire confiance
+        -->
+        <MetadataProvider type="Chaining">
+
+            <!-- Meta-données de la fédération de Test RENATER
+                 (ATTENTION: ne pas activer en prod) -->
+            <!-- RENATER_SP_TEST_OR_PROD=TEST BEGIN -->
+            <MetadataProvider type="XML"
+              url="https://pub.federation.renater.fr/metadata/test/preview/preview-idps-test-metadata.xml"
+              backingFilePath="preview-idps-test-metadata.xml" reloadInterval="3600">
+              <MetadataFilter type="Signature" certificate="renater-metadata-signing-cert-2016.pem"/>
+            </MetadataProvider>
+            <!-- RENATER_SP_TEST_OR_PROD=TEST END -->
+
+
+            <!-- Meta-données de la fédération de Prod de RENATER
+                 cf https://services.renater.fr/federation/documentation/fiches-techniques/passageprod
+            -->
+            <!-- RENATER_SP_TEST_OR_PROD=PROD BEGIN --><!--
+            <MetadataProvider type="XML"
+              url="https://pub.federation.renater.fr/metadata/renater/main/main-idps-renater-metadata.xml"
+              backingFilePath="main-idps-renater-metadata.xml" reloadInterval="3600">
+              <MetadataFilter type="Signature" certificate="renater-metadata-signing-cert-2016.pem"/>
+            </MetadataProvider>
+            --><!-- RENATER_SP_TEST_OR_PROD=PROD END -->
+
+            <!-- Metadonnées de TestShib https://www.testshib.org/configure.html
+                 (ATTENTION: ne pas activer en prod) -->
+            <!--
+            <MetadataProvider type="XML" url="http://www.testshib.org/metadata/testshib-providers.xml"
+                  backingFilePath="testshib-two-idp-metadata.xml" reloadInterval="180000" />
+            -->
+        </MetadataProvider>
+
+        <!-- Simple file-based resolver for using a single keypair. -->
+        <CredentialResolver type="File" key="ssl/server-replaceme.key" certificate="ssl/server-replaceme.crt" />
+
+        <!-- Map to extract attributes from SAML assertions. -->
+        <AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml" />
+
+        <!-- Extract standard SAML assertion values and map it as a classic attribute
+             see https://shibboleth.atlassian.net/wiki/spaces/SHIB2/pages/2577072276/NativeSPAttributeExtractor#NativeSPAttributeExtractor-AssertionAttributeExtractor(Version2.5andAbove)
+             so that it's possible to used it in apache config, eg: "Require shib-attr Shib-Identity-Provider"
+        -->
+        <AttributeExtractor type="Assertion"
+          Issuer="Shib-Identity-Provider"
+          AuthnInstant="Shib-Authentication-Instant"
+          AuthnContextClassRef="Shib-AuthnContext-Class"
+          AuthnContextDeclRef="Shib-AuthnContext-Decl"
+          SessionIndex="Shib-Session-Index"
+        />
+
+        <!-- Use a SAML query if no attributes are supplied during SSO. -->
+        <AttributeResolver type="Query" subjectMatch="true" />
+
+        <!-- Default filtering policy for recognized attributes, lets other data pass. -->
+        <AttributeFilter type="XML" validate="true" path="attribute-policy.xml" />
+
+    </ApplicationDefaults>
+
+    <!-- Policies that determine how to process and authenticate runtime messages. -->
+    <SecurityPolicyProvider type="XML" validate="true" path="security-policy.xml"/>
+
+    <!-- Low-level configuration about protocols and bindings available for use. -->
+    <ProtocolProvider type="XML" validate="true" reloadChanges="false" path="protocols.xml"/>
+
+</SPConfig>

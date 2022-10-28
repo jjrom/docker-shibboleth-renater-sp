@@ -1,0 +1,60 @@
+# docker-compose example to be able to
+# test easily this image or to give some
+# config to copy/paste for an easier 
+# integration in an application
+version: "3.5"
+
+services:
+  shibboleth-sp:
+    container_name: shibboleth-sp
+    build: ./image/
+    image: abesesr/docker-shibboleth-renater-sp:1.6.0
+    ports:
+      - 443:443
+    volumes:
+      - ./volume/httpd-vhosts.inc.conf:/usr/local/apache2/conf/extra/httpd-vhosts.inc.conf
+    environment:
+      # container parameters, values comming from .env
+      # (see .env-dist example)
+      - RENATER_SP_TEST_OR_PROD
+      - RENATER_SP_ENTITY_ID
+      - RENATER_SP_ADMIN_MAIL
+      - RENATER_SP_CERTIFICATE_CRT
+      - RENATER_SP_CERTIFICATE_KEY
+      - RENATER_SP_HTTPD_SERVER_NAME
+      - RENATER_SP_HTTPD_LOG_LEVEL
+      - RENATER_SP_HTTPD_LOG_FORMAT
+      - RENATER_SP_HTTPD_PUBLIC_PATH_0
+      - RENATER_SP_HTTPD_PUBLIC_PROXY_TO_0
+      - RENATER_SP_HTTPD_PUBLIC_PATH_1
+      - RENATER_SP_HTTPD_PUBLIC_PROXY_TO_1
+      - RENATER_SP_HTTPD_PROTECTED_PATH_0
+      - RENATER_SP_HTTPD_PROTECTED_PROXY_TO_0
+      - RENATER_SP_HTTPD_PROTECTED_PATH_1
+      - RENATER_SP_HTTPD_PROTECTED_PROXY_TO_1
+      - RENATER_SP_HTTPD_PROTECTED_REQUIRE_1_0
+      - RENATER_SP_HTTPD_PROTECTED_REQUIRE_1_1
+    restart: unless-stopped
+    depends_on:
+      - backend-example
+
+  # container just echoing all the HTTP headers as a JSON object
+  # perfect for our shibboleth test because we need to show all the
+  # attributes populated by the reverse proxy (shibboleth-sp container)
+  # https://hub.docker.com/r/mendhak/http-https-echo
+  backend-example-home:
+    container_name: backend-example-home
+    image: mendhak/http-https-echo:23
+    restart: unless-stopped
+  backend-example-api:
+    container_name: backend-example-api
+    image: mendhak/http-https-echo:23
+    restart: unless-stopped
+  backend-example-protected:
+    container_name: backend-example-protected
+    image: mendhak/http-https-echo:23
+    restart: unless-stopped
+  backend-example-protected2:
+    container_name: backend-example-protected2
+    image: mendhak/http-https-echo:23
+    restart: unless-stopped
