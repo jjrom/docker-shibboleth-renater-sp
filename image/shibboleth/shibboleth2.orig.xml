@@ -109,7 +109,7 @@
         </MetadataProvider>
 
         <!-- Simple file-based resolver for using a single keypair. -->
-        <CredentialResolver type="File" key="ssl/server.key" certificate="ssl/server.crt" />
+        <CredentialResolver type="File" key="ssl/server-replaceme.key" certificate="ssl/server-replaceme.crt" />
 
         <!-- Map to extract attributes from SAML assertions. -->
         <AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml" />

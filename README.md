@@ -45,16 +45,21 @@ Si vous souhaitez injecter des configurations apache spécifiques dans la config
 2) Vous avez besoin de générer un couple de clé SSH privée/publique dédié pour le démon shibboleth qui tournera dans le conteneur. Ces clés sont ici dans l'image : ``/etc/shibboleth/ssl/server.key`` et ``/etc/shibboleth/ssl/server.crt``. Remarque : la clé ``server.key`` (privée) is critique et ne doit jamais être partagée mais pour des raison de démonstration, un couple de clé ``server.key`` et ``server.crt`` est inclu dans cette image ce qui permet de tester facilement cette image sans avoir à en générer une soit même. En revanche, cette clé ne doit **jamais être utilisée en production** car elle est [accessible publiquement dans le code source ici](https://github.com/abes-esr/docker-shibboleth-renater-sp/blob/main/image/shibboleth/ssl/server.key). Pour votre passage en production, nous aurez besoin de générer un couple de clé vous même. Voici les lignes de commandes permettant de générer un couple de clé auto-signées avec un long délai d'expiration (7300 jours = 20 ans!) comme recommandé par [RENATER](https://services.renater.fr/federation/documentation/generale/certificats-saml#recommandations_techniques_pour_les_certificats) :
    ```
    cd docker-shibboleth-sp/volume/shibboleth/ssl/
-   openssl genrsa -out server.key 2048
-   openssl req -new -key server.key -out server.csr
-   openssl x509 -req -days 7300 -in server.csr -signkey server.key -out server.crt
+   openssl genrsa -out server-prod.key 2048
+   openssl req -new -key server-prod.key -out server-prod.csr
+   openssl x509 -req -days 7300 -in server-prod.csr -signkey server-prod.key -out server-prod.crt
+   ```
+3) Vous devez ensuite positionner les variables suivantes dans le fichier ``.env`` :
+   ```
+   RENATER_SP_CERTIFICATE_CRT=ssl/server-prod.crt
+   RENATER_SP_CERTIFICATE_KEY=ssl/server-prod.key
    ```
 
-3) Vous devez ensuite lancer votre conteneur puis consulter l'URL https://votre-ip/Shibboleth.sso/Metadata pour récupérer les métadonnées attendue dans l'étape suivante par le guichet RENATER.
+4) Vous devez ensuite lancer votre conteneur puis consulter l'URL https://votre-ip/Shibboleth.sso/Metadata pour récupérer les métadonnées attendue dans l'étape suivante par le guichet RENATER.
 
-4) Vous devez ensuite enregistrer votre fournisseur de service dans la [fédération d'identités Education-Recherche de production](https://federation.renater.fr/registry?action=get_all)
+5) Vous devez ensuite enregistrer votre fournisseur de service dans la [fédération d'identités Education-Recherche de production](https://federation.renater.fr/registry?action=get_all)
 
-5) Vous pouvez tester votre fournisseur de service en naviguant sur l'URL suivante : https://votre-ip/my-protected-url/
+6) Vous pouvez tester votre fournisseur de service en naviguant sur l'URL suivante : https://votre-ip/my-protected-url/
 
 
 ### Démarrer l'application
