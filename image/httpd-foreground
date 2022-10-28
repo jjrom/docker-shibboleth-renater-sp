@@ -5,6 +5,8 @@ export RENATER_SP_TEST_OR_PROD=${RENATER_SP_TEST_OR_PROD:='TEST'}
 export RENATER_SP_TEST_OR_PROD=${RENATER_SP_TEST_OR_PROD^^} # force upercase: TEST or PROD
 export RENATER_SP_ENTITY_ID=${RENATER_SP_ENTITY_ID}
 export RENATER_SP_ADMIN_MAIL=${RENATER_SP_ADMIN_MAIL:='admin@exemple.fr'}
+export RENATER_SP_CERTIFICATE_CRT=${RENATER_SP_CERTIFICATE_CRT:='ssl/server.crt'}
+export RENATER_SP_CERTIFICATE_KEY=${RENATER_SP_CERTIFICATE_KEY:='ssl/server.key'}
 export RENATER_SP_HTTPD_SERVER_NAME=${RENATER_SP_HTTPD_SERVER_NAME}
 export RENATER_SP_HTTPD_LOG_LEVEL=${RENATER_SP_HTTPD_LOG_LEVEL:='info ssl:warn'}
 export RENATER_SP_HTTPD_LOG_FORMAT=${RENATER_SP_HTTPD_LOG_FORMAT:='%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"'}
@@ -64,6 +66,8 @@ if [ -z ${RENATER_SP_HTTPD_PROTECTED_PATH_9} ]; then  sed -i 's#^.*RENATER_SP_HT
 cp -f /etc/shibboleth/shibboleth2.orig.xml /etc/shibboleth/shibboleth2.xml
 sed -i "s#https://replaceme/sp#${RENATER_SP_ENTITY_ID}#" /etc/shibboleth/shibboleth2.xml
 sed -i "s#admin@replace.me#${RENATER_SP_ADMIN_MAIL}#" /etc/shibboleth/shibboleth2.xml
+sed -i "s#ssl/server-replaceme.crt#${RENATER_SP_CERTIFICATE_CRT}#" /etc/shibboleth/shibboleth2.xml
+sed -i "s#ssl/server-replaceme.key#${RENATER_SP_CERTIFICATE_KEY}#" /etc/shibboleth/shibboleth2.xml
 if [ "$RENATER_SP_TEST_OR_PROD" = "PROD" ]; then
 	# comment the TEST blocs
 	sed -i 's#<!-- RENATER_SP_TEST_OR_PROD=TEST BEGIN -->#<!-- RENATER_SP_TEST_OR_PROD=TEST BEGIN --><!--#g' /etc/shibboleth/shibboleth2.xml
