@@ -25,6 +25,13 @@ do
 		fi
 	done
 done
+echo "----------------"
+
+# generate a var list for apache (define-vars.conf file)
+rm -f /usr/local/apache2/conf/extra/define-vars.conf && touch /usr/local/apache2/conf/extra/define-vars.conf
+set | grep -e "^RENATER_SP_" > /usr/local/apache2/conf/extra/define-vars.conf
+sed -i 's#RENATER_SP_#Define RENATER_SP_#g' /usr/local/apache2/conf/extra/define-vars.conf
+sed -i 's#=# #g' /usr/local/apache2/conf/extra/define-vars.conf
 
 # for easy debug: display the container parameters at startup
 set | grep -e "^RENATER_SP_" | grep -v -e "=$" | grep -v -e "='#'$"

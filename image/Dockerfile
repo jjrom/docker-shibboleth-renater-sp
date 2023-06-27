@@ -2,8 +2,9 @@ FROM httpd:2.4.54
 
 # apache2: to have the apache web server able to authenticate and to reverse proxy the real application
 # libapache2-mod-shib: to have mod_shib for apache and the shibd daemon
+# vim: for debug
 RUN apt-get update \
-  && apt-get -y install apache2 libapache2-mod-shib \
+  && apt-get -y install vim apache2 libapache2-mod-shib \
   && apt-get clean \
   && apt-get -y autoremove
 
