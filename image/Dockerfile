@@ -2,13 +2,8 @@ FROM httpd:2.4.54
 
 # apache2: to have the apache web server able to authenticate and to reverse proxy the real application
 # libapache2-mod-shib: to have mod_shib for apache and the shibd daemon
-# Apache and mod_shib versions are fixed to be sure 
-# nothing moves between two docker build.
-# To get the latest stable, this quick search can be done:
-# https://packages.debian.org/search?keywords=apache2&searchon=names&suite=stable&section=all
-# https://packages.debian.org/search?keywords=libapache2-mod-shib&searchon=names&suite=stable&section=all
 RUN apt-get update \
-  && apt-get -y install apache2=2.4.54-1~deb11u1 libapache2-mod-shib=3.2.2+dfsg1-1 \
+  && apt-get -y install apache2 libapache2-mod-shib \
   && apt-get clean \
   && apt-get -y autoremove
 
