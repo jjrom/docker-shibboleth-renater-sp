@@ -64,16 +64,7 @@ Si vous souhaitez injecter des configurations apache spécifiques dans la config
 
 ### Démarrer l'application
 
-Pour démarrer l'application depuis le [docker-compose exemple](https://github.com/abes-esr/docker-shibboleth-renater-sp/blob/main/docker-compose.yml) :
-```bash
-cd docker-shibboleth-renater-sp/
-cp .env-dist .env
-# personnalisez les valeurs de .env
-
-docker-compose up
-```
-
-Vous pouvez alors vous baser sur le [docker-compose.yml exemple](https://github.com/abes-esr/docker-shibboleth-renater-sp/blob/main/docker-compose.yml) pour l'intégrer dans votre application. A noter que la dernière version disponible de l'image est la suivante :
+Vous pouvez vous baser sur le [docker-compose.yml exemple](https://github.com/abes-esr/docker-shibboleth-renater-sp/blob/main/docker-compose.yml) pour l'intégrer dans votre application comme un reverse proxy applicatif. A noter que la dernière version disponible de l'image est la suivante :
 ```bash
 docker pull abesesr/docker-shibboleth-renater-sp:1.6.1
 ```
@@ -87,6 +78,22 @@ Cette image est construite et publiée automatiquement sur dockerhub à l'aide d
 cd docker-shibboleth-sp/
 docker-compose build
 ```
+
+### Démarrer l'application pour le développement
+
+Pour démarrer l'application depuis le [docker-compose exemple](https://github.com/abes-esr/docker-shibboleth-renater-sp/blob/main/docker-compose.yml) :
+```bash
+cd docker-shibboleth-renater-sp/
+cp .env-dist .env
+# personnalisez les valeurs de .env
+
+docker-compose up
+```
+
+Puis se rendre sur (en ignorant les certificat invalides) :
+- https://127.0.0.1/ pour une URL non protégée
+- https://127.0.0.1/my-protected-url/ pour une URL non protégée par fédération d'identiés
+
 
 ### Comment publier une nouvelle version de cette image ?
 
