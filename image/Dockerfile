@@ -1,5 +1,8 @@
 FROM httpd:2.4.54
 
+
+ENV BUILD_DIR=./image
+
 # apache2: to have the apache web server able to authenticate and to reverse proxy the real application
 # libapache2-mod-shib: to have mod_shib for apache and the shibd daemon
 # vim: for debug
@@ -27,18 +30,18 @@ RUN sed -i \
 
 # apache conf and shib config
 # (templates in order to be able to customize it fro external parameters)
-COPY ./httpd-vhosts.conf /usr/local/apache2/conf/extra/httpd-vhosts.conf.orig
+COPY ${BUILD_DIR}/httpd-vhosts.conf /usr/local/apache2/conf/extra/httpd-vhosts.conf.orig
 RUN touch /usr/local/apache2/conf/extra/httpd-vhosts.inc.conf
 RUN touch /usr/local/apache2/conf/extra/httpd-vhosts.public_proxy.inc.conf
 RUN touch /usr/local/apache2/conf/extra/httpd-vhosts.protected_proxy.inc.conf
-COPY ./shibboleth/ /etc/shibboleth/
+COPY ${BUILD_DIR}/shibboleth/ /etc/shibboleth/
 
 # redirect apache logs to docker stdout/stderr
 RUN ln -sf /proc/1/fd/1 /var/log/apache2/access.log
 RUN ln -sf /proc/1/fd/2 /var/log/apache2/error.log
 
 # creates the entrypoint of this container
-COPY ./httpd-foreground /usr/local/bin/
+COPY ${BUILD_DIR}/httpd-foreground /usr/local/bin/
 CMD [ "httpd-foreground" ]
 
 EXPOSE 443
